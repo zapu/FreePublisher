@@ -41,7 +41,7 @@ public class IdentityPage extends WebPage
             }
             else
             {
-
+                contentNode.addChild("p", "lol action");
             }
         }
     }

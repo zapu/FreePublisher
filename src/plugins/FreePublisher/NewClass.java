@@ -20,7 +20,7 @@ public class NewClass
     {
         try
         {
-            SAXBuilder builder = new SAXBuilder();
+            /*SAXBuilder builder = new SAXBuilder();
             //builder.setValidation(true);
             builder.setIgnoringElementContentWhitespace(true);
             Document doc = builder.build(new File("C:/dev/freenet/FreePublisher/build.xml"));
@@ -31,7 +31,11 @@ public class NewClass
             for(Element e : allChildren)
             {
                 System.err.println(e.getName());
-            }
+            }*/
+
+            Identity id = new Identity("private", "public", new byte[]{ 0x00, 0x00 }, "heh" );
+            id.saveToFile(null);
+
         }
         catch(Exception e) //gotta catch 'em all
         {

@@ -5,6 +5,7 @@ import freenet.l10n.BaseL10n.LANGUAGE;
 import freenet.node.Version;
 import freenet.pluginmanager.*;
 import freenet.support.Logger;
+import plugins.FreePublisher.tasks.TaskManager;
 
 /**
  *
@@ -23,6 +24,8 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
 
     public Identity identity;
 
+    public TaskManager taskManager;
+
     public FreePublisher()
     {
         instance = this;
@@ -34,6 +37,8 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         System.err.println("FreePublisher started.");
         
         respirator = pr;
+
+        taskManager = new TaskManager(pr.getHLSimpleClient());
 
         userInterface = new UserInterface(pr);
         userInterface.load();

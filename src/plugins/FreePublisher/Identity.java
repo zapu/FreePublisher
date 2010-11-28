@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 import org.jdom.*;
@@ -55,11 +56,12 @@ public class Identity
         }
     }
 
-    public Identity(String privateKey, String publicKey, byte[] encryptionKey)
+    public Identity(String privateKey, String publicKey, byte[] encryptionKey, String name)
     {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.encryptionKey = encryptionKey;
+        this.name = name;
     }
 
     private void loadKeys(Element keysElement)
@@ -106,10 +108,12 @@ public class Identity
         doc.setRootElement(root);
 
         XMLOutputter outputter = new XMLOutputter();
-        FileWriter writer = new FileWriter(file);
+        StringWriter writer = new StringWriter();
+        //FileWriter writer = new FileWriter(file);
         outputter.output(doc, writer);
         writer.flush();
         writer.close();
+        String lulz = writer.getBuffer().toString();
     }
 
     private String name;
