@@ -8,17 +8,15 @@ import freenet.support.HTMLNode;
  */
 public class TestTask extends FreenetTask
 {
-
     @Override
-    public void run()
+    public void taskStatus(HTMLNode contentNode)
     {
 
     }
 
     @Override
-    public void taskStatus(HTMLNode contentNode)
-    {
-
+    public void taskRun() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
