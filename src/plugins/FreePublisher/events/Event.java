@@ -11,14 +11,16 @@ public abstract class Event
 {
     public abstract EventType getEventType();
 
-    public void unserialize(Element element)
-    {
+    public abstract void unserialize(Element element);
 
-    }
+    public abstract void serialize(Element element);
 
-    public Element serialize()
+    public final Element getElement()
     {
-        throw new NotSupportedException();
+        Element element = new Element("event");
+        element.setAttribute("type", String.valueOf(getEventType().getId()));
+        serialize(element);
+        return element;
     }
 
     public static Event getEvent(Element element) throws Exception
