@@ -109,11 +109,9 @@ public class Identity
 
         XMLOutputter outputter = new XMLOutputter();
         StringWriter writer = new StringWriter();
-        //FileWriter writer = new FileWriter(file);
         outputter.output(doc, writer);
         writer.flush();
         writer.close();
-        String lulz = writer.getBuffer().toString();
     }
 
     private String name;
@@ -121,4 +119,8 @@ public class Identity
     private String privateKey;
     private String publicKey;
     private byte[] encryptionKey;
+
+    public String getPublicKey() { return publicKey; }
+    public String getPrivateKey() { return privateKey; }
+    public byte[] getEncryptionKey() { return encryptionKey; }
 }

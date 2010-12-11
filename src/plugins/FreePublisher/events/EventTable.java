@@ -21,7 +21,7 @@ public class EventTable
         events = new LinkedList();
     }
 
-    public List<Event> events;
+    private List<Event> events;
 
     public void loadEventTable(InputStream stream) throws JDOMException, IOException, Exception
     {
@@ -31,16 +31,21 @@ public class EventTable
         Document doc = builder.build(stream);
 
         Element root = doc.getRootElement();
-        Element events = root.getChild("events");
+        Element eventsElement = root.getChild("events");
 
-        for(Object obj : events.getChildren())
+        for(Object obj : eventsElement.getChildren())
         {
             Element eventElement = (Element) obj;
             Event event = Event.getEvent(eventElement);
             if(event != null)
             {
-                this.events.add(event);
+                events.add(event);
             }
         }
+    }
+
+    public List<Event> getEvents()
+    {
+        return events;
     }
 }

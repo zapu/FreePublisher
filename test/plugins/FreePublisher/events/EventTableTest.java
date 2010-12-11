@@ -66,7 +66,7 @@ public class EventTableTest {
         EventTable table = new EventTable();
         table.loadEventTable(inputStream);
 
-        assertEquals(1, table.events.size());
+        assertEquals(1, table.getEvents().size());
     }
 
 }
