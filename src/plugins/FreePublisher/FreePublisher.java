@@ -57,6 +57,8 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         userInterface.load();
 
         /*
+        TODO: Remove this, or keep as reference on how to insert something to Freenet :)
+
         try
         {
             HighLevelSimpleClient hlsl = pr.getHLSimpleClient();
