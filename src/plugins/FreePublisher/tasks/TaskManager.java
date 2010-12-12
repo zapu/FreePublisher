@@ -37,8 +37,6 @@ public class TaskManager extends WebPage
         taskList = new HashMap<Integer, FreenetTask>();
         taskAutoId = 0;
         
-        addTask(new SleepTask(15, 2000));
-
         registerAction("", new ListTasksAction());
         registerAction("show", new ShowTaskAction());
     }

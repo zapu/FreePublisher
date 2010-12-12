@@ -2,6 +2,7 @@ package plugins.FreePublisher.events;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +43,24 @@ public class EventTable
                 events.add(event);
             }
         }
+    }
+
+    public void outputEventTable(OutputStream stream) throws IOException
+    {
+        Document doc = new Document();
+        Element root = new Element("eventTable");
+
+        Element eventsElement = new Element("events");
+        for(Event event : events)
+        {
+            eventsElement.getChildren().add(event.getElement());
+        }
+
+        root.getChildren().add(eventsElement);
+        doc.setRootElement(root);
+
+        XMLOutputter outputter = new XMLOutputter();
+        outputter.output(doc, stream);
     }
 
     public List<Event> getEvents()
