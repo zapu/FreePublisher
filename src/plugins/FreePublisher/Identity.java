@@ -3,6 +3,8 @@ package plugins.FreePublisher;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
@@ -17,12 +19,12 @@ import org.jdom.output.XMLOutputter;
  */
 public class Identity
 {
-    public Identity(File file) throws JDOMException, IOException, Exception
+    public Identity(InputStream stream) throws JDOMException, IOException, Exception
     {
         SAXBuilder builder = new SAXBuilder();
         //builder.setValidation(true);
         builder.setIgnoringElementContentWhitespace(true);
-        Document doc = builder.build(file);
+        Document doc = builder.build(stream);
 
         Element root = doc.getRootElement();
 
@@ -92,7 +94,7 @@ public class Identity
         return result.toString();
     }
 
-    public void saveToFile(File file) throws IOException
+    public void save(OutputStream stream) throws IOException
     {
         Document doc = new Document();
         Element root = new Element("identity");
@@ -108,10 +110,7 @@ public class Identity
         doc.setRootElement(root);
 
         XMLOutputter outputter = new XMLOutputter();
-        StringWriter writer = new StringWriter();
-        outputter.output(doc, writer);
-        writer.flush();
-        writer.close();
+        outputter.output(doc, stream);
     }
 
     private String name;

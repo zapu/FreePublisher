@@ -23,6 +23,7 @@ public abstract class FreenetTask implements Runnable
         Waiting,
         Started,
         Done,
+        Error,
     }
 
     private Status status;
@@ -48,5 +49,10 @@ public abstract class FreenetTask implements Runnable
     {
         thread = new Thread(this);
         thread.start();
+    }
+
+    protected void notifyError()
+    {
+        status = Status.Error;
     }
 }

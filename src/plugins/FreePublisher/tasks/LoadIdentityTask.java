@@ -5,6 +5,9 @@ import freenet.keys.FreenetURI;
 import freenet.support.HTMLNode;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.events.EventTable;
@@ -35,7 +38,7 @@ public class LoadIdentityTask extends FreenetTask
     {
         try
         {
-            Identity identity = new Identity(file);
+            Identity identity = new Identity(new FileInputStream(file));
 
             status = "Fetching EventTable.";
 
