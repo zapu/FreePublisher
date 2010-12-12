@@ -5,6 +5,7 @@ import freenet.keys.FreenetURI;
 import freenet.support.HTMLNode;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
 
@@ -15,11 +16,9 @@ import plugins.FreePublisher.Identity;
 public class CreateIdentityTask extends FreenetTask
 {
     private boolean loadAfter;
-    private HighLevelSimpleClient HLSL;
 
-    public CreateIdentityTask(HighLevelSimpleClient client, boolean loadAfter)
+    public CreateIdentityTask(boolean loadAfter)
     {
-        this.HLSL = client;
         this.loadAfter = loadAfter;
     }
 
@@ -32,6 +31,8 @@ public class CreateIdentityTask extends FreenetTask
     @Override
     public void taskRun()
     {
+        HighLevelSimpleClient HLSL = FreePublisher.getInstance().getPR().getHLSimpleClient();
+
         try
         {
             FreenetURI[] keyPair = HLSL.generateKeyPair("");
@@ -45,6 +46,7 @@ public class CreateIdentityTask extends FreenetTask
             keyGenerator.init(256);
 
             SecretKey secretKey = keyGenerator.generateKey();
+            //loading secret key = SecretKey secretKey = new SecretKeySpec(bytes, "AES");
 
             Identity identity = new Identity(privateKey, publicKey, secretKey.getEncoded(), "identity");
         }

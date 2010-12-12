@@ -15,11 +15,11 @@ import plugins.FreePublisher.events.EventTable;
  */
 public class LoadIdentityTask extends FreenetTask
 {
-    private String filename;
+    private File file;
 
-    public LoadIdentityTask(String filename)
+    public LoadIdentityTask(File file)
     {
-        this.filename = filename;
+        this.file = file;
     }
 
     @Override
@@ -35,13 +35,12 @@ public class LoadIdentityTask extends FreenetTask
     {
         try
         {
-            File file = new File(filename);
             Identity identity = new Identity(file);
 
             status = "Fetching EventTable.";
 
             FetchResult result = FreePublisher.getInstance().getPR().getHLSimpleClient().
-                    fetch(new FreenetURI(identity.getPublicKey()));
+                    fetch(new FreenetURI("USK@" + identity.getPublicKey() + "/table.xml/0"));
 
             EventTable eventTable = new EventTable();
             eventTable.loadEventTable(new ByteArrayInputStream(result.asByteArray()));

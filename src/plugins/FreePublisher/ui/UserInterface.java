@@ -33,6 +33,7 @@ public class UserInterface
 
         toadletContainer.register(mainToadlet = new MainToadlet(client), "FreePublisher", "/publisher/", true, "Status", "Status", true, null);
         toadletContainer.register(identityToadlet = new IdentityPage(client), "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
+        toadletContainer.register(FreePublisher.getInstance().taskManager, "FreePublisher", "/publisher/tasks", true, "Tasks", "Tasks", true, null);
     }
 
     public void unload()

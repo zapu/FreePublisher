@@ -15,12 +15,14 @@ import freenet.client.events.ClientEventListener;
 import freenet.keys.FreenetURI;
 import freenet.node.RequestClient;
 import freenet.support.HTMLNode;
+import freenet.support.api.HTTPRequest;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import plugins.FreePublisher.ui.WebPage;
 import java.util.Map;
+import plugins.FreePublisher.ui.WebPageAction;
 
 /**
  *
@@ -34,6 +36,50 @@ public class TaskManager extends WebPage
 
         taskList = new HashMap<Integer, FreenetTask>();
         taskAutoId = 0;
+        
+        addTask(new SleepTask(15, 2000));
+
+        registerAction("", new ListTasksAction());
+        registerAction("show", new ShowTaskAction());
+    }
+
+    @Override
+    public String path()
+    {
+        return "/publisher/tasks";
+    }
+
+    class ListTasksAction implements WebPageAction
+    {
+        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            HTMLNode listNode = new HTMLNode("ul");
+
+            for(Integer key : taskList.keySet())
+            {
+                HTMLNode taskNode = new HTMLNode("li");
+                taskNode.addChild("a", "href", "/publisher/tasks/?action=show&id=" + key, key + " " + taskList.get(key).toString());
+                listNode.addChild(taskNode);
+            }
+
+            contentNode.addChild(listNode);
+        }
+    }
+
+    class ShowTaskAction implements WebPageAction
+    {
+        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            int key = Integer.valueOf(request.getParam("id"));
+            FreenetTask task = taskList.get(key);
+            if(task == null)
+            {
+                contentNode.addChild("p", "Task with id " + key + " does not exist.");
+                return;
+            }
+
+            task.taskStatus(contentNode);
+        }
     }
 
     private Map<Integer, FreenetTask> taskList;

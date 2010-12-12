@@ -15,7 +15,17 @@ public abstract class FreenetTask implements Runnable
         taskDone = false;
         taskStarted = false;
         percentDone = 0;
+        status = Status.Waiting;
     }
+
+    enum Status
+    {
+        Waiting,
+        Started,
+        Done,
+    }
+
+    private Status status;
 
     private boolean taskDone;
     private int percentDone;
@@ -25,17 +35,14 @@ public abstract class FreenetTask implements Runnable
 
     public void run()
     {
-        taskStarted = true;
+        status = Status.Started;
         taskRun();
-        taskDone = true;
+        status = Status.Done;
     }
 
     public abstract void taskStatus(HTMLNode contentNode);
 
     public abstract void taskRun();
-
-    public synchronized boolean isTaskStarted() { return taskStarted; }
-    public synchronized boolean isTaskDone() { return taskDone; }
 
     public void runBackground()
     {
