@@ -32,10 +32,10 @@ public class CreateIdentityTask extends FreenetTask
     {
         this.loadAfter = loadAfter;
         this.identityFile = file;
-        this.createStatus = Status.Waiting;
+        this.createStatus = CreateStatus.Waiting;
     }
 
-    enum Status
+    enum CreateStatus
     {
         Waiting,
         GeneratingKeys,
@@ -44,7 +44,7 @@ public class CreateIdentityTask extends FreenetTask
         Error,
     }
 
-    private Status createStatus;
+    private CreateStatus createStatus;
 
     @Override
     public void taskStatus(HTMLNode contentNode)
@@ -59,7 +59,7 @@ public class CreateIdentityTask extends FreenetTask
 
         try
         {
-            createStatus = Status.GeneratingKeys;
+            createStatus = CreateStatus.GeneratingKeys;
 
             FreenetURI[] keyPair = HLSL.generateKeyPair("");
             String insertKey = keyPair[0].toString();
@@ -77,30 +77,29 @@ public class CreateIdentityTask extends FreenetTask
             Identity identity = new Identity(privateKey, publicKey, secretKey.getEncoded(), "identity");
             identity.save(new FileOutputStream(identityFile));
 
-            createStatus = Status.InsertingEventTable;
+            createStatus = CreateStatus.InsertingEventTable;
 
             EventTable table = new EventTable();
             
-            ArrayBucket arrb = new ArrayBucket("eventTableBucket");
-            OutputStream eventStream = arrb.getOutputStream();
+            ArrayBucket arrayBucket = new ArrayBucket("eventTableBucket");
+            OutputStream eventStream = arrayBucket.getOutputStream();
             table.outputEventTable(eventStream);
             eventStream.flush();
             Closer.close(eventStream);
 
-            HLSL.insert(new InsertBlock(arrb, new ClientMetadata("text/plain"), new FreenetURI("USK@" + privateKey + "/events.xml/0")), false, null);
+            HLSL.insert(new InsertBlock(arrayBucket, new ClientMetadata("text/plain"), new FreenetURI("USK@" + privateKey + "/events.xml/0")), false, null);
 
             if(loadAfter)
             {
-                FreePublisher.getInstance().identity = identity;
-                FreePublisher.getInstance().eventTable = table;
+                FreePublisher.getInstance().setIdentity(identity, table);
             }
 
-            createStatus = Status.Done;
+            createStatus = CreateStatus.Done;
         }
         catch(Exception e)
         {
             error = e.toString();
-            createStatus = Status.Error;
+            createStatus = CreateStatus.Error;
             notifyError();
         }
     }

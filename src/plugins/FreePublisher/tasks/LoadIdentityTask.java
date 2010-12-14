@@ -32,6 +32,7 @@ public class LoadIdentityTask extends FreenetTask
     }
 
     private String status;
+    public String getStatusString() { return status; }
 
     @Override
     public void taskRun()
@@ -48,15 +49,14 @@ public class LoadIdentityTask extends FreenetTask
             EventTable eventTable = new EventTable();
             eventTable.loadEventTable(new ByteArrayInputStream(result.asByteArray()));
 
-            FreePublisher.getInstance().identity = identity;
-            FreePublisher.getInstance().eventTable = eventTable;
+            FreePublisher.getInstance().setIdentity(identity, eventTable);
+
+            status = "Loaded.";
         }
         catch(Exception e)
         {
-            status = "Failed";
+            status = "Failed " + e.getClass().getName() + " " + e.getMessage();
         }
-
-        status = "Loaded.";
     }
 
 }

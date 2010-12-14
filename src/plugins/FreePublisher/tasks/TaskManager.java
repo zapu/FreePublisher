@@ -49,7 +49,7 @@ public class TaskManager extends WebPage
 
     class ListTasksAction implements WebPageAction
     {
-        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
             HTMLNode listNode = new HTMLNode("ul");
 
@@ -61,22 +61,26 @@ public class TaskManager extends WebPage
             }
 
             contentNode.addChild(listNode);
+
+            return 0;
         }
     }
 
     class ShowTaskAction implements WebPageAction
     {
-        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
             int key = Integer.valueOf(request.getParam("id"));
             FreenetTask task = taskList.get(key);
             if(task == null)
             {
                 contentNode.addChild("p", "Task with id " + key + " does not exist.");
-                return;
+                return 0;
             }
 
             task.taskStatus(contentNode);
+
+            return 0;
         }
     }
 

@@ -34,8 +34,8 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
     private UserInterface userInterface;
     private PluginRespirator respirator;
 
-    public Identity identity;
-    public EventTable eventTable;
+    private Identity identity;
+    private EventTable eventTable;
 
     public TaskManager taskManager;
 
@@ -117,6 +117,22 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
     public PluginRespirator getPR()
     {
         return respirator;
+    }
+
+    public Identity getIdentity()
+    {
+        return identity;
+    }
+
+    public EventTable getEventTable()
+    {
+        return eventTable;
+    }
+
+    public void setIdentity(Identity identity, EventTable table)
+    {
+        this.identity = identity;
+        this.eventTable = table;
     }
 
 }

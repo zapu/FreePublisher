@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * @author zapu
  */
-public class WebPage extends Toadlet
+public abstract class WebPage extends Toadlet
 {
     public WebPage(HighLevelSimpleClient hlsc)
     {
@@ -37,6 +37,20 @@ public class WebPage extends Toadlet
     public String path()
     {
         throw new NotSupportedException("WebPage's path() called,");
+    }
+
+    //For debugging purposes
+    //Generic status consts:
+    public static final int STATUS_NOERROR = 0; //When nothing has really happened yet (e.g. only info page was displayed)
+    public static final int STATUS_ERROR = 100;
+    public static final int STATUS_RUNNING = 201;
+    public static final int STATUS_DISPATCHED = 202;
+    public static final int STATUS_DONE = 203;
+
+    private int debugStatusCode = 0;
+    public int statusCode()
+    {
+        return debugStatusCode;
     }
 
     public void handleMethodGET(URI uri, final HTTPRequest request, final ToadletContext ctx)
@@ -79,7 +93,7 @@ public class WebPage extends Toadlet
         }
     }
 
-    private void callAction(HTTPRequest request, HTMLNode node, boolean post)
+    public void callAction(HTTPRequest request, HTMLNode node, boolean post)
     {
         String actionName = "";
         if(post && request.isPartSet("action"))
@@ -97,10 +111,10 @@ public class WebPage extends Toadlet
             return;
         }
 
-        action.handleAction(request, node, post);
+        debugStatusCode = action.handleAction(request, node, post);
     }
 
-    public void registerAction(String name, WebPageAction action)
+    protected void registerAction(String name, WebPageAction action)
     {
         actionMap.put(name, action);
     }

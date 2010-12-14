@@ -64,8 +64,9 @@ public class LoadIdentityTest {
     @Test
     public void fileOpenFail() throws IOException, FetchException
     {
-        expect(mockHLSL.fetch((FreenetURI) anyObject())).andThrow(new FetchException(0));
-        LoadIdentityTask task = new LoadIdentityTask(File.createTempFile("a", "b"));
+        expect(mockHLSL.fetch((FreenetURI) anyObject())).andThrow(new FetchException(1));
+        LoadIdentityTask task = new LoadIdentityTask(new File("/bad/filename"));
         task.taskRun();
+        System.out.println(task.getStatusString());
     }
 }

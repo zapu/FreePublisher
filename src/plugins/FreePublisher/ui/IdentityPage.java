@@ -19,44 +19,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
+import plugins.FreePublisher.models.IdentityModel;
+import plugins.FreePublisher.models.IdentityModel.CreateIdentityResult;
+import plugins.FreePublisher.models.ModelCallback;
 
 
 public class IdentityPage extends WebPage
 {
-    class IndexAction implements WebPageAction
-    {
-        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
-        {
-            contentNode.addChild("p", "lol action");
-        }
-    }
+    private IdentityModel identityModel;
 
-    class LoadIdentityAction implements WebPageAction
-    {
-        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
-        {
-            if(!post)
-            {
-
-            }
-            else
-            {
-                contentNode.addChild("p", "lol action");
-            }
-        }
-    }
-
-    class CreateIdentityAction implements WebPageAction
-    {
-        public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
-        {
-            
-        }
-    }
-
-    public IdentityPage(HighLevelSimpleClient hlsc)
+    public IdentityPage(HighLevelSimpleClient hlsc, IdentityModel identityModel)
     {
         super(hlsc);
+
+        this.identityModel = identityModel;
 
         registerAction("", new IndexAction());
         registerAction("loadIdentity", new LoadIdentityAction());
@@ -67,5 +43,95 @@ public class IdentityPage extends WebPage
     public String path()
     {
         return "/publisher/identity";
+    }
+
+    
+
+    class IndexAction implements WebPageAction
+    {
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            return 0;
+        }
+    }
+
+    class LoadIdentityAction implements WebPageAction, Runnable
+    {
+        private LoadIdentityAction backgroundTask = null;
+
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            return 0;
+        }
+
+        public void run()
+        {
+
+        }
+    }
+
+    class CreateIdentityAction implements WebPageAction, Runnable, ModelCallback
+    {
+        private Thread thread = null;
+        private boolean loadIdentity = false;
+        private CreateIdentityResult result = null;
+        private int taskStatus = STATUS_RUNNING;
+
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            try
+            {
+                if(thread != null)
+                {
+                    if(result == null)
+                    {
+                        contentNode.addChild("p", "Still running...");
+                        return taskStatus;
+                    }
+                    else
+                    {
+                        contentNode.addChild("p", "Done!");
+                        return STATUS_DONE;
+                    }
+                }
+                else
+                {
+                    thread = new Thread(this);
+                    thread.start();
+
+                    contentNode.addChild("p", "Dispatched");
+
+                    return STATUS_DISPATCHED;
+                }
+            }
+            catch(Exception e)
+            {
+                contentNode.addChild("p", e.toString());
+                System.err.println("CreateIdentityAction: " + e);
+                return STATUS_ERROR;
+            }
+        }
+
+        public void run()
+        {
+            try
+            {
+                result = identityModel.createIdentity();
+                if(loadIdentity)
+                {
+                    FreePublisher.getInstance().setIdentity(result.identity, result.eventTable);
+                }
+            }
+            catch(Exception ex)
+            {
+                System.err.println(ex.toString());
+                taskStatus = STATUS_ERROR;
+            }
+        }
+
+        public void statusCallback(int status)
+        {
+            System.err.println("CreateIdentityAction::statusCallback " + status);
+        }
     }
 }

@@ -9,5 +9,5 @@ import freenet.support.api.HTTPRequest;
  */
 public interface WebPageAction
 {
-    public void handleAction(HTTPRequest request, HTMLNode contentNode, boolean post);
+    public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post);
 }

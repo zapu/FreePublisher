@@ -6,6 +6,7 @@ import freenet.clients.http.PageMaker;
 import freenet.clients.http.ToadletContainer;
 import freenet.pluginmanager.PluginRespirator;
 import plugins.FreePublisher.FreePublisher;
+import plugins.FreePublisher.models.IdentityModel;
 
 /**
  *
@@ -31,15 +32,21 @@ public class UserInterface
     {
         pageMaker.addNavigationCategory("/publisher/", "FreePublisher", "FreePublisher", FreePublisher.getInstance());
 
-        toadletContainer.register(mainToadlet = new MainToadlet(client), "FreePublisher", "/publisher/", true, "Status", "Status", true, null);
-        toadletContainer.register(identityToadlet = new IdentityPage(client), "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
-        toadletContainer.register(FreePublisher.getInstance().taskManager, "FreePublisher", "/publisher/tasks", true, "Tasks", "Tasks", true, null);
+        toadletContainer.register(mainToadlet = new MainToadlet(client),
+                "FreePublisher", "/publisher/", true, "Status", "Status", true, null);
+        
+        toadletContainer.register(identityToadlet = new IdentityPage(client, null),
+                "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
+        
+        toadletContainer.register(FreePublisher.getInstance().taskManager, ""
+                + "FreePublisher", "/publisher/tasks", true, "Tasks", "Tasks", true, null);
     }
 
     public void unload()
     {
         toadletContainer.unregister(mainToadlet);
         toadletContainer.unregister(identityToadlet);
+        toadletContainer.unregister(FreePublisher.getInstance().taskManager);
 
         pageMaker.removeNavigationCategory("FreePublisher");
     }
