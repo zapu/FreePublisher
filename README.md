@@ -6,6 +6,8 @@ My plugin for Freenet.
 Needs jdom which is bundled to final jar with plugin (this is required by Freenet).
 
 One day, this will allow you to:
+
+
  * Publish things to Freenet under so called "Identity"
  * Change things you published (and keeping history of changes?).
  * Subscribe to other people and see their changes.
