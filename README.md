@@ -6,11 +6,11 @@ My plugin for Freenet.
 Needs jdom which is bundled to final jar with plugin (this is required by Freenet).
 
 One day, this will allow you to:
-* Publish things to Freenet under so called "Identity"
-* Change things you published (and keeping history of changes?).
-* Subscribe to other people and see their changes.
+ * Publish things to Freenet under so called "Identity"
+ * Change things you published (and keeping history of changes?).
+ * Subscribe to other people and see their changes.
 and maybe:
-* Fork other people's things and let them merge your changes.
+ * Fork other people's things and let them merge your changes.
 
 Event table? Event?
 -------------------
@@ -23,6 +23,10 @@ Wheter EventTable is created (pushed to Freenet) upon Identity creation or when 
 
 Tasks?
 ------
+
+> Warning - this is not _exactly_ true anymore, as I'm trying to create some sort of MVC pattern.
+> Business logic is in models package, controllers (which are also views, because of lack of templating
+> system) are in web package.
 
 Accessing content on Freenet takes a while and should be done in background, informing user about the progress via user interface. 
 
