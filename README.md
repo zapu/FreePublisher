@@ -7,12 +7,11 @@ Needs jdom which is bundled to final jar with plugin (this is required by Freene
 
 One day, this will allow you to:
 
-
- * Publish things to Freenet under so called "Identity"
- * Change things you published (and keeping history of changes?).
- * Subscribe to other people and see their changes.
-and maybe:
- * Fork other people's things and let them merge your changes.
+	* Publish things to Freenet under so called "Identity"
+	* Change things you published (and keeping history of changes?).
+	* Subscribe to other people and see their changes.
+	and maybe:
+	* Fork other people's things and let them merge your changes.
 
 Event table? Event?
 -------------------
