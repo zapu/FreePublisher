@@ -42,7 +42,9 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
     public FreePublisher()
     {
         instance = this;
+
         identity = null;
+        eventTable = null;
     }
 
     public void runPlugin(PluginRespirator pr)

@@ -21,11 +21,15 @@ public class UserInterface
     private MainToadlet mainToadlet;
     private IdentityPage identityToadlet;
 
+    private IdentityModel identityModel;
+
     public UserInterface(PluginRespirator pr)
     {
         toadletContainer = pr.getToadletContainer();
         client = pr.getHLSimpleClient();
         pageMaker = pr.getPageMaker();
+
+        identityModel = new IdentityModel(pr);
     }
 
     public void load()
@@ -35,7 +39,7 @@ public class UserInterface
         toadletContainer.register(mainToadlet = new MainToadlet(client),
                 "FreePublisher", "/publisher/", true, "Status", "Status", true, null);
         
-        toadletContainer.register(identityToadlet = new IdentityPage(client, null),
+        toadletContainer.register(identityToadlet = new IdentityPage(client, identityModel),
                 "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
         
         toadletContainer.register(FreePublisher.getInstance().taskManager, ""

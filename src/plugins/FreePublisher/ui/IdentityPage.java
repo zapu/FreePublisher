@@ -2,6 +2,7 @@ package plugins.FreePublisher.ui;
 
 import freenet.client.FetchException;
 import freenet.client.FetchResult;
+import freenet.support.api.HTTPUploadedFile;
 import java.io.IOException;
 import java.net.URI;
 
@@ -15,12 +16,17 @@ import freenet.keys.FreenetURI;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.models.IdentityModel;
-import plugins.FreePublisher.models.IdentityModel.CreateIdentityResult;
+import plugins.FreePublisher.models.IdentityModel.IdentityResult;
 import plugins.FreePublisher.models.ModelCallback;
 
 
@@ -57,6 +63,16 @@ public class IdentityPage extends WebPage
             else
             {
                 contentNode.addChild("p", "Loaded identity: " + iden.getName() + "(" + iden.getPublicKey() + ")");
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                try
+                {
+                    iden.save(stream);
+                    contentNode.addChild("pre", stream.toString());
+                }
+                catch(Exception e)
+                {
+                    System.err.println(e);
+                }
             }
             
             return 0;
@@ -65,24 +81,102 @@ public class IdentityPage extends WebPage
 
     class LoadIdentityAction implements WebPageAction, Runnable
     {
+        private Thread thread = null;
         private LoadIdentityAction backgroundTask = null;
+        private IdentityResult result = null;
+        private int taskStatus = STATUS_RUNNING;
+        private InputStream identityStream = null;
 
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
-            return 0;
+            try
+            {
+                if(thread != null)
+                {
+                    if(result == null)
+                    {
+                        contentNode.addChild("p", "Still running...");
+                        return taskStatus;
+                    }
+                    else
+                    {
+                        contentNode.addChild("p", "Done!");
+                        return STATUS_DONE;
+                    }
+                }
+                else
+                {
+                    if(post)
+                    {
+                        HTTPUploadedFile uploadedFile = request.getUploadedFile("file");
+                        if(uploadedFile == null)
+                            throw new Exception("Form error");
+
+                        identityStream = uploadedFile.getData().getInputStream();
+
+                        thread = new Thread(this);
+                        thread.start();
+
+                        contentNode.addChild("p", "Dispatched");
+
+                        return STATUS_DISPATCHED;
+                    }
+                    else
+                    {
+                        HTMLNode form = FreePublisher.getInstance().getPR().addFormChild(contentNode, "", "form name");
+                        form.addChild("input",
+                                        new String[] { "class", "type", "name" },
+                                        new String[] { "config", "file", "file" });
+                        form.addChild("input",
+                                        new String[] { "type", "name", "value" },
+                                        new String[] { "hidden", "action", "loadIdentity" });
+                        form.addChild("input",
+                                        new String[] { "type", "value", "style" },
+                                        new String[] { "submit", "Add Feed", "margin-top:10px; margin-bottom:20px;" });
+
+                        return STATUS_NOERROR;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                contentNode.addChild("p", e.toString());
+                System.err.println("LoadIdentityAction: " + e);
+                return STATUS_ERROR;
+            }
         }
 
         public void run()
         {
+            try
+            {
+                result = identityModel.loadIdentity(identityStream);
+            }
+            catch(Exception ex)
+            {
+                System.err.println(ex.toString());
+                taskStatus = STATUS_ERROR;
+                FreePublisher.getInstance().setIdentity(result.identity, result.eventTable);
+            }
+            finally
+            {
+                try
+                {
+                    identityStream.close();
+                }
+                catch(IOException e)
+                {
 
+                }
+            }
         }
     }
 
     class CreateIdentityAction implements WebPageAction, Runnable, ModelCallback
     {
         private Thread thread = null;
-        private boolean loadIdentity = false;
-        private CreateIdentityResult result = null;
+        private boolean loadIdentity = true;
+        private IdentityResult result = null;
         private int taskStatus = STATUS_RUNNING;
 
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
