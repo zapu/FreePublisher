@@ -56,6 +56,8 @@ public class Identity
             loadKeys(keysRoot);*/
             throw new Exception("key encryption unsupported (yet).");
         }
+
+        dirty = false;
     }
 
     public Identity(String privateKey, String publicKey, byte[] encryptionKey, String name)
@@ -64,6 +66,8 @@ public class Identity
         this.publicKey = publicKey;
         this.encryptionKey = encryptionKey;
         this.name = name;
+
+        this.dirty = false;
     }
 
     private void loadKeys(Element keysElement)
@@ -119,7 +123,12 @@ public class Identity
     private String publicKey;
     private byte[] encryptionKey;
 
+    public String getName() { return name; }
     public String getPublicKey() { return publicKey; }
     public String getPrivateKey() { return privateKey; }
     public byte[] getEncryptionKey() { return encryptionKey; }
+
+    private boolean dirty;
+    public boolean isDirty() { return dirty; }
+    public void setDirty(boolean val) { dirty = val; }
 }

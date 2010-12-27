@@ -55,34 +55,6 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
 
         userInterface = new UserInterface(pr);
         userInterface.load();
-
-        /*
-        TODO: Remove this, or keep as reference on how to insert something to Freenet :)
-
-        try
-        {
-            HighLevelSimpleClient hlsl = pr.getHLSimpleClient();
-            System.err.println("Testing insert. Generating URI.");
-            FreenetURI[] uri = hlsl.generateKeyPair("");
-            System.err.println("Generated URI:");
-            System.err.println("Insert URI: " + uri[0].toString());
-            System.err.println("Request URI: " + uri[1].toString());
-            System.err.println("Generating bucket.");
-            ArrayBucket arrb = new ArrayBucket("bucket");
-            OutputStream outputStream = arrb.getOutputStream();
-            outputStream.write(new String("this is a test").getBytes());
-            outputStream.flush();
-            Closer.close(outputStream);
-            System.err.println("bucket size: " + arrb.size());
-
-            hlsl.insert(new InsertBlock(arrb, new ClientMetadata("text/plain"), new FreenetURI(uri[0] + "test.txt")), false, null);
-            System.err.println("done");
-        }
-        catch (Exception ex)
-        {
-            System.err.println("EXCEPTION: " + ex.toString());
-        }
-*/
     }
 
     public void terminate()
@@ -91,7 +63,6 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
 
         userInterface.unload();
     }
-
 
     public String getVersion()
     {

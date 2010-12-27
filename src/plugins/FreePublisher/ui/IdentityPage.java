@@ -45,12 +45,20 @@ public class IdentityPage extends WebPage
         return "/publisher/identity";
     }
 
-    
-
     class IndexAction implements WebPageAction
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
+            Identity iden = FreePublisher.getInstance().getIdentity();
+            if(iden == null)
+            {
+                contentNode.addChild("p", "Identity not loaded.");
+            }
+            else
+            {
+                contentNode.addChild("p", "Loaded identity: " + iden.getName() + "(" + iden.getPublicKey() + ")");
+            }
+            
             return 0;
         }
     }

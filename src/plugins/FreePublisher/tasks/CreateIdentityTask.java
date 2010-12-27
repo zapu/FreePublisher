@@ -1,6 +1,5 @@
 package plugins.FreePublisher.tasks;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import freenet.client.ClientMetadata;
 import freenet.client.HighLevelSimpleClient;
 import freenet.client.InsertBlock;

@@ -118,4 +118,9 @@ public abstract class WebPage extends Toadlet
     {
         actionMap.put(name, action);
     }
+
+    protected void removeAction(String name)
+    {
+        actionMap.remove(name);
+    }
 }
