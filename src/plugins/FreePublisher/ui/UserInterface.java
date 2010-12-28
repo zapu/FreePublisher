@@ -1,6 +1,5 @@
 package plugins.FreePublisher.ui;
 
-import plugins.FreePublisher.ui.IdentityPage;
 import freenet.client.HighLevelSimpleClient;
 import freenet.clients.http.PageMaker;
 import freenet.clients.http.ToadletContainer;

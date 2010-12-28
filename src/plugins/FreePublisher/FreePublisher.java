@@ -1,21 +1,8 @@
 package plugins.FreePublisher;
 
-import freenet.client.ClientMetadata;
-import freenet.client.HighLevelSimpleClient;
-import freenet.client.InsertBlock;
-import freenet.keys.FreenetURI;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Level;
 import plugins.FreePublisher.ui.UserInterface;
 import freenet.l10n.BaseL10n.LANGUAGE;
-import freenet.node.Version;
 import freenet.pluginmanager.*;
-import freenet.support.Logger;
-import freenet.support.api.Bucket;
-import freenet.support.io.ArrayBucket;
-import freenet.support.io.ArrayBucketFactory;
-import freenet.support.io.Closer;
 import plugins.FreePublisher.events.EventTable;
 import plugins.FreePublisher.tasks.TaskManager;
 

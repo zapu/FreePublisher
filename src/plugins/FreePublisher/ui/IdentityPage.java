@@ -1,28 +1,13 @@
 package plugins.FreePublisher.ui;
 
-import freenet.client.FetchException;
-import freenet.client.FetchResult;
 import freenet.support.api.HTTPUploadedFile;
 import java.io.IOException;
-import java.net.URI;
 
 import freenet.client.HighLevelSimpleClient;
-import freenet.clients.http.PageNode;
-import freenet.clients.http.RedirectException;
-import freenet.clients.http.Toadlet;
-import freenet.clients.http.ToadletContext;
-import freenet.clients.http.ToadletContextClosedException;
-import freenet.keys.FreenetURI;
-import freenet.pluginmanager.PluginRespirator;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.models.IdentityModel;

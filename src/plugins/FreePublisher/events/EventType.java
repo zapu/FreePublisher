@@ -6,7 +6,6 @@
 package plugins.FreePublisher.events;
 
 import java.lang.reflect.Constructor;
-import org.jdom.Element;
 
 /**
  *

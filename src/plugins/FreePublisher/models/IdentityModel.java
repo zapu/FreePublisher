@@ -7,7 +7,6 @@ import freenet.keys.FreenetURI;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.io.ArrayBucket;
 import freenet.support.io.Closer;
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.crypto.KeyGenerator;
