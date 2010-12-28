@@ -20,6 +20,7 @@ public class EventTable
     public EventTable()
     {
         events = new LinkedList();
+        dirty = false;
     }
 
     private List<Event> events;
@@ -67,4 +68,8 @@ public class EventTable
     {
         return events;
     }
+
+    private boolean dirty;
+    public boolean isDirty() { return dirty; }
+    public void setDirty(boolean val) { dirty = val; }
 }

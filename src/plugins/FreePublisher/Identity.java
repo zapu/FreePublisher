@@ -56,8 +56,6 @@ public class Identity
             loadKeys(keysRoot);*/
             throw new Exception("key encryption unsupported (yet).");
         }
-
-        dirty = false;
     }
 
     public Identity(String privateKey, String publicKey, byte[] encryptionKey, String name)
@@ -66,8 +64,6 @@ public class Identity
         this.publicKey = publicKey;
         this.encryptionKey = encryptionKey;
         this.name = name;
-
-        this.dirty = false;
     }
 
     private void loadKeys(Element keysElement)
@@ -105,6 +101,7 @@ public class Identity
         root.setAttribute(new Attribute("name", name));
 
         Element keys = new Element("keys");
+        keys.setAttribute("type", "0");
         keys.getChildren().add(new Element("private").setText(privateKey));
         keys.getChildren().add(new Element("public").setText(publicKey));
         keys.getChildren().add(new Element("encryption").setText(byteToHexString(encryptionKey)));
@@ -127,8 +124,4 @@ public class Identity
     public String getPublicKey() { return publicKey; }
     public String getPrivateKey() { return privateKey; }
     public byte[] getEncryptionKey() { return encryptionKey; }
-
-    private boolean dirty;
-    public boolean isDirty() { return dirty; }
-    public void setDirty(boolean val) { dirty = val; }
 }

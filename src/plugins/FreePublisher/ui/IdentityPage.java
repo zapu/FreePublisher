@@ -73,6 +73,8 @@ public class IdentityPage extends WebPage
                 {
                     System.err.println(e);
                 }
+
+
             }
             
             return 0;
@@ -151,12 +153,12 @@ public class IdentityPage extends WebPage
             try
             {
                 result = identityModel.loadIdentity(identityStream);
+                FreePublisher.getInstance().setIdentity(result.identity, result.eventTable);
             }
             catch(Exception ex)
             {
                 System.err.println(ex.toString());
                 taskStatus = STATUS_ERROR;
-                FreePublisher.getInstance().setIdentity(result.identity, result.eventTable);
             }
             finally
             {
@@ -168,6 +170,8 @@ public class IdentityPage extends WebPage
                 {
 
                 }
+
+                this.thread = null;
             }
         }
     }
@@ -228,6 +232,10 @@ public class IdentityPage extends WebPage
             {
                 System.err.println(ex.toString());
                 taskStatus = STATUS_ERROR;
+            }
+            finally
+            {
+                this.thread = null;
             }
         }
 
