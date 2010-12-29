@@ -27,8 +27,6 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
     private Identity identity;
     private EventTable eventTable;
 
-    public FreePublisherStatus status = new FreePublisherStatus();
-
     public TaskManager taskManager;
 
     public FreePublisher()

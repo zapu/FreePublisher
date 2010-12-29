@@ -10,7 +10,6 @@ import freenet.support.api.HTTPRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import plugins.FreePublisher.FreePublisher;
-import plugins.FreePublisher.FreePublisherStatus;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.models.IdentityModel;
 import plugins.FreePublisher.models.IdentityModel.IdentityResult;
@@ -20,9 +19,8 @@ import plugins.FreePublisher.models.ModelCallback;
 public class IdentityPage extends WebPage
 {
     private IdentityModel identityModel;
-    private FreePublisherStatus status;
 
-    public IdentityPage(PluginRespirator pr, IdentityModel identityModel, FreePublisherStatus status)
+    public IdentityPage(PluginRespirator pr, IdentityModel identityModel)
     {
         super(pr);
 
@@ -83,7 +81,6 @@ public class IdentityPage extends WebPage
                 {
                     if(result == null)
                     {
-                        status.pushTask = null;
                         contentNode.addChild("p", "Still running...");
                         return taskStatus;
                     }

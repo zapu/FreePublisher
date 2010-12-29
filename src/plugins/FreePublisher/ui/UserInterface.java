@@ -38,9 +38,7 @@ public class UserInterface
         toadletContainer.register(mainToadlet = new MainToadlet(client),
                 "FreePublisher", "/publisher/", true, "Status", "Status", true, null);
 
-        identityToadlet = new IdentityPage(pr,
-                (IdentityModel) publisher.getModel(IdentityModel.class),
-                publisher.status);
+        identityToadlet = new IdentityPage(pr, (IdentityModel) publisher.getModel(IdentityModel.class));
         
         toadletContainer.register(identityToadlet, "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
         
