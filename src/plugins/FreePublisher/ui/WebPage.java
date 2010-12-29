@@ -9,6 +9,7 @@ import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
+import freenet.pluginmanager.PluginRespirator;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 import java.io.IOException;
@@ -24,14 +25,29 @@ import java.util.Map;
  */
 public abstract class WebPage extends Toadlet
 {
-    public WebPage(HighLevelSimpleClient hlsc)
+    public WebPage(PluginRespirator pr)
     {
-        super(hlsc);
+        super(pr.getHLSimpleClient());
+        
+        this.pluginRespirator = pr;
+        this.HLSC = pr.getHLSimpleClient();
 
         actionMap = new HashMap();
     }
 
     private Map<String, WebPageAction> actionMap;
+    private PluginRespirator pluginRespirator;
+    private HighLevelSimpleClient HLSC;
+
+    public PluginRespirator getPR()
+    {
+        return pluginRespirator;
+    }
+
+    public HighLevelSimpleClient getHLSC()
+    {
+        return HLSC;
+    }
 
     @Override
     public String path()

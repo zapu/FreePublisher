@@ -4,6 +4,9 @@ import plugins.FreePublisher.ui.UserInterface;
 import freenet.l10n.BaseL10n.LANGUAGE;
 import freenet.pluginmanager.*;
 import plugins.FreePublisher.events.EventTable;
+import plugins.FreePublisher.models.EventTableModel;
+import plugins.FreePublisher.models.FreenetModel;
+import plugins.FreePublisher.models.IdentityModel;
 import plugins.FreePublisher.tasks.TaskManager;
 
 /**
@@ -24,6 +27,8 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
     private Identity identity;
     private EventTable eventTable;
 
+    public FreePublisherStatus status = new FreePublisherStatus();
+
     public TaskManager taskManager;
 
     public FreePublisher()
@@ -40,7 +45,10 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         
         respirator = pr;
 
-        taskManager = new TaskManager(pr.getHLSimpleClient());
+        identityModel = new IdentityModel(pr);
+        eventTableModel = new EventTableModel(pr);
+
+        taskManager = new TaskManager(pr);
 
         userInterface = new UserInterface(pr);
         userInterface.load();
@@ -93,6 +101,20 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
     {
         this.identity = identity;
         this.eventTable = table;
+    }
+
+    private IdentityModel identityModel;
+    private EventTableModel eventTableModel;
+
+    //TODO: Change into proper factory
+    public FreenetModel getModel(Class type)
+    {
+        if(type == IdentityModel.class)
+            return identityModel;
+        else if(type == EventTableModel.class)
+            return eventTableModel;
+        else
+            return null;
     }
 
 }

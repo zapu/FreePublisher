@@ -14,6 +14,7 @@ import freenet.client.async.ClientPutter;
 import freenet.client.events.ClientEventListener;
 import freenet.keys.FreenetURI;
 import freenet.node.RequestClient;
+import freenet.pluginmanager.PluginRespirator;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 import java.util.HashMap;
@@ -30,9 +31,9 @@ import plugins.FreePublisher.ui.WebPageAction;
  */
 public class TaskManager extends WebPage
 {
-    public TaskManager(HighLevelSimpleClient hlsc)
+    public TaskManager(PluginRespirator pr)
     {
-        super(hlsc);
+        super(pr);
 
         taskList = new HashMap<Integer, FreenetTask>();
         taskAutoId = 0;

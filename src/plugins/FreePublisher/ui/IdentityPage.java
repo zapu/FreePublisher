@@ -4,11 +4,13 @@ import freenet.support.api.HTTPUploadedFile;
 import java.io.IOException;
 
 import freenet.client.HighLevelSimpleClient;
+import freenet.pluginmanager.PluginRespirator;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import plugins.FreePublisher.FreePublisher;
+import plugins.FreePublisher.FreePublisherStatus;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.models.IdentityModel;
 import plugins.FreePublisher.models.IdentityModel.IdentityResult;
@@ -18,10 +20,11 @@ import plugins.FreePublisher.models.ModelCallback;
 public class IdentityPage extends WebPage
 {
     private IdentityModel identityModel;
+    private FreePublisherStatus status;
 
-    public IdentityPage(HighLevelSimpleClient hlsc, IdentityModel identityModel)
+    public IdentityPage(PluginRespirator pr, IdentityModel identityModel, FreePublisherStatus status)
     {
-        super(hlsc);
+        super(pr);
 
         this.identityModel = identityModel;
 
@@ -58,8 +61,6 @@ public class IdentityPage extends WebPage
                 {
                     System.err.println(e);
                 }
-
-
             }
             
             return 0;
@@ -82,6 +83,7 @@ public class IdentityPage extends WebPage
                 {
                     if(result == null)
                     {
+                        status.pushTask = null;
                         contentNode.addChild("p", "Still running...");
                         return taskStatus;
                     }
@@ -110,7 +112,7 @@ public class IdentityPage extends WebPage
                     }
                     else
                     {
-                        HTMLNode form = FreePublisher.getInstance().getPR().addFormChild(contentNode, "", "form name");
+                        HTMLNode form = getPR().addFormChild(contentNode, "", "form name");
                         form.addChild("input",
                                         new String[] { "class", "type", "name" },
                                         new String[] { "config", "file", "file" });
