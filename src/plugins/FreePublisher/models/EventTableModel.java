@@ -23,8 +23,6 @@ public class EventTableModel extends FreenetModel
         super(respirator);
     }
 
-    //TODO: Fix the violation of DRY...
-
     public void insertEventTable(Identity identity, EventTable eventTable) throws Exception
     {
         System.err.println("insertEventTable started");

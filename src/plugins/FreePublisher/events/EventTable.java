@@ -24,6 +24,7 @@ public class EventTable
     }
 
     private List<Event> events;
+    private String info = "";
 
     public void loadEventTable(InputStream stream) throws JDOMException, IOException, Exception
     {
@@ -33,15 +34,24 @@ public class EventTable
         Document doc = builder.build(stream);
 
         Element root = doc.getRootElement();
-        Element eventsElement = root.getChild("events");
 
-        for(Object obj : eventsElement.getChildren())
+        Element infoElement = root.getChild("info");
+        if(infoElement != null)
         {
-            Element eventElement = (Element) obj;
-            Event event = Event.getEvent(eventElement);
-            if(event != null)
+            info = infoElement.getTextTrim();
+        }
+
+        Element eventsElement = root.getChild("events");
+        if(eventsElement != null)
+        {
+            for(Object obj : eventsElement.getChildren())
             {
-                events.add(event);
+                Element eventElement = (Element) obj;
+                Event event = Event.getEvent(eventElement);
+                if(event != null)
+                {
+                    events.add(event);
+                }
             }
         }
     }
@@ -56,8 +66,13 @@ public class EventTable
         {
             eventsElement.getChildren().add(event.getElement());
         }
-
         root.getChildren().add(eventsElement);
+
+        if(!info.isEmpty())
+        {
+            root.getChildren().add(new Element("info").setText(info));
+        }
+
         doc.setRootElement(root);
 
         XMLOutputter outputter = new XMLOutputter();
