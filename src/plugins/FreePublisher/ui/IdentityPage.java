@@ -3,13 +3,10 @@ package plugins.FreePublisher.ui;
 import freenet.support.api.HTTPUploadedFile;
 import java.io.IOException;
 
-import freenet.client.HighLevelSimpleClient;
-import freenet.pluginmanager.PluginRespirator;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.Publisher;
 import plugins.FreePublisher.models.IdentityModel;
@@ -54,6 +51,19 @@ public class IdentityPage extends WebPage
                 try
                 {
                     identity.save(stream);
+                    contentNode.addChild("h1", "Identity:");
+                    contentNode.addChild("pre", stream.toString());
+                }
+                catch(Exception e)
+                {
+                    System.err.println(e);
+                }
+
+                stream.reset();
+                try
+                {
+                    getPublisher().eventTable.outputEventTable(stream);
+                    contentNode.addChild("h1", "Events:");
                     contentNode.addChild("pre", stream.toString());
                 }
                 catch(Exception e)
@@ -155,8 +165,7 @@ public class IdentityPage extends WebPage
                 {
 
                 }
-
-                this.thread = null;
+                thread = null;
             }
         }
     }
