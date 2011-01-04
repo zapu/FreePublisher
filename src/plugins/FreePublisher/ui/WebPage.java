@@ -17,6 +17,7 @@ import java.net.URI;
 
 import java.util.HashMap;
 import java.util.Map;
+import plugins.FreePublisher.Publisher;
 
 
 /**
@@ -25,12 +26,14 @@ import java.util.Map;
  */
 public abstract class WebPage extends Toadlet
 {
-    public WebPage(PluginRespirator pr)
+    public WebPage(Publisher publisher)
     {
-        super(pr.getHLSimpleClient());
-        
-        this.pluginRespirator = pr;
-        this.HLSC = pr.getHLSimpleClient();
+        super(publisher.getPR().getHLSimpleClient());
+
+        this.publisher = publisher;
+
+        this.pluginRespirator = publisher.getPR();
+        this.HLSC = pluginRespirator.getHLSimpleClient();
 
         actionMap = new HashMap();
     }
@@ -38,6 +41,7 @@ public abstract class WebPage extends Toadlet
     private Map<String, WebPageAction> actionMap;
     private PluginRespirator pluginRespirator;
     private HighLevelSimpleClient HLSC;
+    private Publisher publisher;
 
     public PluginRespirator getPR()
     {
@@ -47,6 +51,11 @@ public abstract class WebPage extends Toadlet
     public HighLevelSimpleClient getHLSC()
     {
         return HLSC;
+    }
+
+    public Publisher getPublisher()
+    {
+        return publisher;
     }
 
     @Override

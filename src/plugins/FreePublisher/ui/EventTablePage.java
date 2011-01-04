@@ -6,6 +6,7 @@ import freenet.support.api.HTTPRequest;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import plugins.FreePublisher.Publisher;
 import plugins.FreePublisher.events.EventTable;
 import plugins.FreePublisher.models.EventTableModel;
 
@@ -17,11 +18,11 @@ public class EventTablePage extends WebPage
 {
     private EventTableModel eventTableModel;
 
-    public EventTablePage(PluginRespirator pr, EventTableModel eventTableModel)
+    public EventTablePage(Publisher publisher)
     {
-        super(pr);
+        super(publisher);
 
-        this.eventTableModel = eventTableModel;
+        eventTableModel = publisher.getModel(EventTableModel.class);
 
         tables = new HashMap<String, ViewTableAction>();
 

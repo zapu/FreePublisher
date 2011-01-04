@@ -5,6 +5,7 @@ import freenet.clients.http.PageMaker;
 import freenet.clients.http.ToadletContainer;
 import freenet.pluginmanager.PluginRespirator;
 import plugins.FreePublisher.FreePublisher;
+import plugins.FreePublisher.Publisher;
 import plugins.FreePublisher.models.EventTableModel;
 import plugins.FreePublisher.models.IdentityModel;
 
@@ -19,13 +20,18 @@ public class UserInterface
     private final HighLevelSimpleClient client;
     private final PageMaker pageMaker;
 
-    private MainToadlet mainToadlet;
+    private FreePublisher plugin;
+    private Publisher publisher;
+
     private IdentityPage identityPage;
     private EventTablePage eventTablePage;
 
-    public UserInterface(PluginRespirator pr)
+    public UserInterface(FreePublisher plugin)
     {
-        this.pr = pr;
+        this.plugin = plugin;
+        this.pr = plugin.getPR();
+        this.publisher = plugin.getPublisher();
+
         this.toadletContainer = pr.getToadletContainer();
         this.client = pr.getHLSimpleClient();
         this.pageMaker = pr.getPageMaker();
@@ -33,18 +39,13 @@ public class UserInterface
 
     public void load()
     {
-        FreePublisher publisher = FreePublisher.getInstance();
-
-        pageMaker.addNavigationCategory("/publisher/", "FreePublisher", "FreePublisher", FreePublisher.getInstance());
-
-        toadletContainer.register(mainToadlet = new MainToadlet(client),
-                "FreePublisher", "/publisher/", true, "Status", "Status", true, null);
-
-        identityPage = new IdentityPage(pr, (IdentityModel) publisher.getModel(IdentityModel.class));
+        pageMaker.addNavigationCategory("/publisher/", "FreePublisher", "FreePublisher", plugin);
+        
+        identityPage = new IdentityPage(publisher);
         
         toadletContainer.register(identityPage, "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
 
-        eventTablePage = new EventTablePage(pr, (EventTableModel) publisher.getModel(EventTableModel.class));
+        eventTablePage = new EventTablePage(publisher);
 
         toadletContainer.register(eventTablePage, "FreePublisher", eventTablePage.path(), true, "Browse", "Browse", true, null);
         
@@ -54,10 +55,8 @@ public class UserInterface
 
     public void unload()
     {
-        toadletContainer.unregister(mainToadlet);
         toadletContainer.unregister(identityPage);
         toadletContainer.unregister(eventTablePage);
-        toadletContainer.unregister(FreePublisher.getInstance().taskManager);
 
         pageMaker.removeNavigationCategory("FreePublisher");
     }

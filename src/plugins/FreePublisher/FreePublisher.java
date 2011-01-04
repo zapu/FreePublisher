@@ -7,7 +7,6 @@ import plugins.FreePublisher.events.EventTable;
 import plugins.FreePublisher.models.EventTableModel;
 import plugins.FreePublisher.models.FreenetModel;
 import plugins.FreePublisher.models.IdentityModel;
-import plugins.FreePublisher.tasks.TaskManager;
 
 /**
  *
@@ -15,26 +14,13 @@ import plugins.FreePublisher.tasks.TaskManager;
  */
 public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPluginL10n
 {
-    private static FreePublisher instance;
-    public static synchronized FreePublisher getInstance()
-    {
-        return instance;
-    }
-
+    private Publisher publisher;
     private UserInterface userInterface;
     private PluginRespirator respirator;
 
-    private Identity identity;
-    private EventTable eventTable;
-
-    public TaskManager taskManager;
-
     public FreePublisher()
     {
-        instance = this;
 
-        identity = null;
-        eventTable = null;
     }
 
     public void runPlugin(PluginRespirator pr)
@@ -43,12 +29,9 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         
         respirator = pr;
 
-        identityModel = new IdentityModel(pr);
-        eventTableModel = new EventTableModel(pr);
+        publisher = new Publisher(respirator);
 
-        taskManager = new TaskManager(pr);
-
-        userInterface = new UserInterface(pr);
+        userInterface = new UserInterface(this);
         userInterface.load();
     }
 
@@ -85,34 +68,8 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         return respirator;
     }
 
-    public Identity getIdentity()
+    public Publisher getPublisher()
     {
-        return identity;
+        return publisher;
     }
-
-    public EventTable getEventTable()
-    {
-        return eventTable;
-    }
-
-    public void setIdentity(Identity identity, EventTable table)
-    {
-        this.identity = identity;
-        this.eventTable = table;
-    }
-
-    private IdentityModel identityModel;
-    private EventTableModel eventTableModel;
-
-    //TODO: Change into proper factory
-    public FreenetModel getModel(Class type)
-    {
-        if(type == IdentityModel.class)
-            return identityModel;
-        else if(type == EventTableModel.class)
-            return eventTableModel;
-        else
-            return null;
-    }
-
 }

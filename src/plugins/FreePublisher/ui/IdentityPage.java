@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import plugins.FreePublisher.FreePublisher;
 import plugins.FreePublisher.Identity;
+import plugins.FreePublisher.Publisher;
 import plugins.FreePublisher.models.IdentityModel;
 import plugins.FreePublisher.models.IdentityModel.IdentityResult;
 import plugins.FreePublisher.models.ModelCallback;
@@ -20,11 +21,11 @@ public class IdentityPage extends WebPage
 {
     private IdentityModel identityModel;
 
-    public IdentityPage(PluginRespirator pr, IdentityModel identityModel)
+    public IdentityPage(Publisher publisher)
     {
-        super(pr);
+        super(publisher);
 
-        this.identityModel = identityModel;
+        identityModel = publisher.getModel(IdentityModel.class);
 
         registerAction("", new IndexAction());
         registerAction("loadIdentity", new LoadIdentityAction());
@@ -41,18 +42,18 @@ public class IdentityPage extends WebPage
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
-            Identity iden = FreePublisher.getInstance().getIdentity();
-            if(iden == null)
+            Identity identity = getPublisher().identity;
+            if(identity == null)
             {
                 contentNode.addChild("p", "Identity not loaded.");
             }
             else
             {
-                contentNode.addChild("p", "Loaded identity: " + iden.getName() + "(" + iden.getPublicKey() + ")");
+                contentNode.addChild("p", "Loaded identity: " + identity.getName() + "(" + identity.getPublicKey() + ")");
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 try
                 {
-                    iden.save(stream);
+                    identity.save(stream);
                     contentNode.addChild("pre", stream.toString());
                 }
                 catch(Exception e)
@@ -68,7 +69,6 @@ public class IdentityPage extends WebPage
     class LoadIdentityAction implements WebPageAction, Runnable
     {
         private Thread thread = null;
-        private LoadIdentityAction backgroundTask = null;
         private IdentityResult result = null;
         private int taskStatus = STATUS_RUNNING;
         private InputStream identityStream = null;
@@ -137,7 +137,8 @@ public class IdentityPage extends WebPage
             try
             {
                 result = identityModel.loadIdentity(identityStream);
-                FreePublisher.getInstance().setIdentity(result.identity, result.eventTable);
+                getPublisher().identity = result.identity;
+                getPublisher().eventTable = result.eventTable;
             }
             catch(Exception ex)
             {
@@ -209,7 +210,8 @@ public class IdentityPage extends WebPage
                 result = identityModel.createIdentity();
                 if(loadIdentity)
                 {
-                    FreePublisher.getInstance().setIdentity(result.identity, result.eventTable);
+                    getPublisher().identity = result.identity;
+                    getPublisher().eventTable = result.eventTable;
                 }
             }
             catch(Exception ex)
