@@ -14,7 +14,7 @@ import plugins.FreePublisher.models.IdentityModel.IdentityResult;
 import plugins.FreePublisher.models.ModelCallback;
 
 
-public class IdentityPage extends WebPage
+public class IdentityPage extends Controller
 {
     private IdentityModel identityModel;
 

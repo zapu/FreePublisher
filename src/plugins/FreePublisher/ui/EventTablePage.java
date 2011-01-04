@@ -14,7 +14,7 @@ import plugins.FreePublisher.models.EventTableModel;
  *
  * @author zapu
  */
-public class EventTablePage extends WebPage
+public class EventTablePage extends Controller
 {
     private EventTableModel eventTableModel;
 

@@ -24,9 +24,9 @@ import plugins.FreePublisher.Publisher;
  *
  * @author zapu
  */
-public abstract class WebPage extends Toadlet
+public abstract class Controller extends Toadlet
 {
-    public WebPage(Publisher publisher)
+    public Controller(Publisher publisher)
     {
         super(publisher.getPR().getHLSimpleClient());
 
@@ -61,7 +61,7 @@ public abstract class WebPage extends Toadlet
     @Override
     public String path()
     {
-        throw new NotSupportedException("WebPage's path() called,");
+        throw new NotSupportedException("Controllers's path() called,");
     }
 
     //For debugging purposes

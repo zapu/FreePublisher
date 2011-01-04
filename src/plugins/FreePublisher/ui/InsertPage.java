@@ -9,7 +9,7 @@ import plugins.FreePublisher.models.EventTableModel;
  *
  * @author zapu
  */
-public class InsertPage extends WebPage
+public class InsertPage extends Controller
 {
     private EventTableModel eventTableModel;
 
@@ -18,6 +18,8 @@ public class InsertPage extends WebPage
         super(publisher);
 
         eventTableModel = getPublisher().getModel(EventTableModel.class);
+
+        registerAction("", new IndexAction());
     }
 
     @Override
@@ -30,7 +32,7 @@ public class InsertPage extends WebPage
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return STATUS_NOERROR;
         }
     }
 
@@ -38,20 +40,38 @@ public class InsertPage extends WebPage
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return STATUS_NOERROR;
         }
 
         public void run()
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            
         }
     }
 
-    class ShareAction implements WebPageAction
+    class AddInsertAction implements WebPageAction
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            if(!post)
+                return STATUS_ERROR;
+
+            if(!request.isPartSet("uploadType"))
+                return STATUS_ERROR;
+
+            String uploadType = request.getPartAsStringFailsafe("uploadType", 10);
+            if(uploadType.equals("httpupload"))
+            {
+
+            }
+            else if (uploadType.equals("filename"))
+            {
+
+            }
+            else
+                return STATUS_ERROR;
+
+            return STATUS_NOERROR;
         }
     }
 }
