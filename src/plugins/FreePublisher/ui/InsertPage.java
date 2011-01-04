@@ -46,4 +46,12 @@ public class InsertPage extends WebPage
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
+
+    class ShareAction implements WebPageAction
+    {
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
 }

@@ -92,6 +92,8 @@ public class EventTablePage extends WebPage
             {
                 //Handle this in another action?
                 removeShowAction(this);
+
+                contentNode.addChild("p", "Action closed.");
             }
             else
             {
@@ -121,6 +123,8 @@ public class EventTablePage extends WebPage
                     }
                 }
             }
+
+            contentNode.addChild("a", new String[] { "href" }, new String[] { path() }, "back");
 
             return 0;
         }
@@ -186,6 +190,20 @@ public class EventTablePage extends WebPage
             form.addChild("input",
                             new String[] { "type", "value", "style" },
                             new String[] { "submit", "Show eventTable", "margin-top:10px; margin-bottom:20px;" });
+
+            if(!tables.isEmpty())
+            {
+                form.addChild("h1", "Opened:");
+
+                HTMLNode list = contentNode.addChild("ul");
+
+                for(ViewTableAction viewAction : tables.values())
+                {
+                    HTMLNode entity = list.addChild("li", viewAction.getAutoId() + " ");
+                    entity.addChild("a", new String[] { "href" }, new String[] { path() + "?action=show_" + viewAction.getAutoId() }, viewAction.getKey());
+                    entity.addChild("a", new String[] { "href" }, new String[] { path() + "?action=show_" + viewAction.getAutoId() + "&req=close" }, "[Close]");
+                }
+            }
 
             return STATUS_NOERROR;
         }
