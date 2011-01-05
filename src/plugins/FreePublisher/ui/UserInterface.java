@@ -25,6 +25,7 @@ public class UserInterface
 
     private IdentityPage identityPage;
     private EventTablePage eventTablePage;
+    private InsertPage insertPage;
 
     public UserInterface(FreePublisher plugin)
     {
@@ -42,15 +43,13 @@ public class UserInterface
         pageMaker.addNavigationCategory("/publisher/", "FreePublisher", "FreePublisher", plugin);
         
         identityPage = new IdentityPage(publisher);
-        
-        toadletContainer.register(identityPage, "FreePublisher", "/publisher/identity", true, "Identity", "Identity", true, null);
+        toadletContainer.register(identityPage, "FreePublisher", identityPage.path(), true, "Identity", "Identity", true, null);
 
         eventTablePage = new EventTablePage(publisher);
-
         toadletContainer.register(eventTablePage, "FreePublisher", eventTablePage.path(), true, "Browse", "Browse", true, null);
-        
-        //toadletContainer.register(FreePublisher.getInstance().taskManager, ""
-        //        + "FreePublisher", "/publisher/tasks", true, "Tasks", "Tasks", true, null);
+
+        insertPage = new InsertPage(publisher);
+        toadletContainer.register(insertPage, "FreePublisher", insertPage.path(), true, "Insert", "Insert", true, null);
     }
 
     public void unload()

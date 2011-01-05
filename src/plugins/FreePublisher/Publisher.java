@@ -19,6 +19,7 @@ public class Publisher
         models = new HashMap<Class, FreenetModel>();
         models.put(IdentityModel.class, new IdentityModel(respirator));
         models.put(EventTableModel.class, new EventTableModel(respirator));
+        models.put(DataModel.class, new DataModel(respirator));
     }
 
     PluginRespirator respirator;

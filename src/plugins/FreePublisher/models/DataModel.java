@@ -26,6 +26,7 @@ public class DataModel extends FreenetModel
             uri = getHLSL().generateKeyPair("")[0];
         }
 
-        return getHLSL().insert(new InsertBlock(bucket, meta, uri), false, null);
+        return uri;
+        //return getHLSL().insert(new InsertBlock(bucket, meta, uri), false, null);
     }
 }

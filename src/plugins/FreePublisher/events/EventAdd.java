@@ -14,8 +14,8 @@ public class EventAdd extends Event
         return EventType.ADD;
     }
 
-    String title;
-    String getURI;
+    public String title;
+    public String getURI;
 
     @Override
     public void unserialize(Element element)

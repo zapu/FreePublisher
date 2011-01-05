@@ -1,13 +1,21 @@
 package plugins.FreePublisher.ui;
 
+import freenet.client.ClientMetadata;
+import freenet.client.InsertException;
+import freenet.keys.FreenetURI;
 import freenet.support.HTMLNode;
 import freenet.support.api.Bucket;
 import freenet.support.api.HTTPRequest;
 import freenet.support.api.HTTPUploadedFile;
 import freenet.support.io.ArrayBucket;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import plugins.FreePublisher.Publisher;
+import plugins.FreePublisher.events.EventAdd;
+import plugins.FreePublisher.models.DataModel;
 import plugins.FreePublisher.models.EventTableModel;
 
 /**
@@ -27,6 +35,7 @@ public class InsertPage extends Controller
         insertJobs = new LinkedList<InsertJob>();
 
         registerAction("", new IndexAction());
+        registerAction("insert", new AddInsertAction());
     }
 
     @Override
@@ -41,9 +50,46 @@ public class InsertPage extends Controller
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
+            if(getPublisher().identity == null)
+            {
+                contentNode.addChild("h1", "Identity is not loaded.");
+                contentNode.addChild("h2", "Load identity first.");
 
+                //return STATUS_NOERROR;
+            }
 
             contentNode.addChild("h2", "New insert");
+
+            HTMLNode form = getPR().addFormChild(contentNode, "", "form name");
+
+            form.addChild("span", "Title:");
+            form.addChild("br");
+            form.addChild("input",
+                            new String[] { "class", "type", "name" },
+                            new String[] { "config", "text", "title" });
+            form.addChild("br");
+
+            form.addChild("span", "File upload via browser (slower):");
+            form.addChild("br");
+            form.addChild("input",
+                            new String[] { "class", "type", "name" },
+                            new String[] { "config", "file", "uploadedFile" });
+
+            form.addChild("br");
+            form.addChild("span", "Upload filename:");
+            form.addChild("br");
+            form.addChild("input",
+                            new String[] { "class", "type", "name" },
+                            new String[] { "config", "text", "uploadFilename" });
+
+            form.addChild("input",
+                            new String[] { "type", "name", "value" },
+                            new String[] { "hidden", "action", "insert" });
+
+            form.addChild("br");
+            form.addChild("input",
+                            new String[] { "type", "value", "style" },
+                            new String[] { "submit", "Insert", "margin-top:10px; margin-bottom:20px;" });
 
             if(!insertJobs.isEmpty())
             {
@@ -65,6 +111,24 @@ public class InsertPage extends Controller
     class InsertJob implements Runnable
     {
         private boolean cancel;
+        private Bucket bucket;
+        private ClientMetadata meta;
+        private FreenetURI uri;
+        private String title;
+
+        private String lastError;
+
+        public InsertJob(String title, Bucket bucket, ClientMetadata meta, FreenetURI uri)
+        {
+            this.title = title;
+            this.bucket = bucket;
+            this.meta = meta;
+            this.uri = uri;
+
+            cancel = false;
+
+            lastError = "";
+        }
 
         public void setCancel()
         {
@@ -73,7 +137,27 @@ public class InsertPage extends Controller
 
         public void run()
         {
-            
+            DataModel model = getPublisher().getModel(DataModel.class);
+            try
+            {
+                FreenetURI insertedUri = model.insertBucket(bucket, meta, uri);
+
+                EventAdd newEvent = new EventAdd();
+                newEvent.date = new Date();
+                newEvent.title = title;
+                newEvent.getURI = insertedUri.toString();
+
+                if(cancel)
+                    return;
+
+                getPublisher().eventTable.getEvents().add(newEvent);
+                getPublisher().eventTable.setDirty(true);
+            }
+            catch (InsertException ex)
+            {
+                System.err.println(ex.toString());
+                lastError = ex.getMessage();
+            }
         }
     }
 
@@ -86,32 +170,29 @@ public class InsertPage extends Controller
                 return STATUS_ERROR;
             }
 
-            if(!request.isPartSet("uploadType"))
-            {
-                return STATUS_ERROR;
-            }
-
             if(getPublisher().identity == null)
             {
-                return STATUS_ERROR;
+                //return STATUS_ERROR;
             }
 
-            Bucket bucket;
-            String uploadType = request.getPartAsStringFailsafe("uploadType", 10);
-            if(uploadType.equals("httpupload"))
+            Bucket bucket = null;
+            String uploadFilename = request.getPartAsStringFailsafe("uploadFilename", 128);
+            if(uploadFilename.isEmpty())
             {
                 HTTPUploadedFile uploadedFile = request.getUploadedFile("uploadedFile");
-                bucket = uploadedFile.getData();
+                if(uploadedFile == null)
+                {
+                    System.err.println("blahblah");
+                }
+                else
+                    bucket = uploadedFile.getData();
             }
-            else if (uploadType.equals("filename"))
-            {
-                bucket = new ArrayBucket("uploadBucket");;
-            }
-            else
-                return STATUS_ERROR;
 
-            InsertJob action = new InsertJob();
+            String title = request.getPartAsStringFailsafe("title", 64);
+
+            InsertJob action = new InsertJob(title, bucket, new ClientMetadata("text/plain"), null);
             insertJobs.add(action);
+            new Thread(action).start();
 
             return STATUS_NOERROR;
         }
