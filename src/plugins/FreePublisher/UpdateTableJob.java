@@ -13,7 +13,7 @@ public class UpdateTableJob implements Runnable
 
     private final Publisher publisher;
 
-    static public final int Interval = 2 * 60 * 1000;
+    static public final int Interval = 10 * 60 * 1000;
     private boolean terminated = false;
     private boolean working = false;
 
@@ -34,8 +34,6 @@ public class UpdateTableJob implements Runnable
 
             if(terminated)
                 return;
-
-            System.err.println("Called");
 
             working = true;
             work();
@@ -64,6 +62,10 @@ public class UpdateTableJob implements Runnable
         publisher.identityLock.lock();
 
         try
+        {
+            Thread.currentThread().sleep(2000);
+        }
+        catch(Exception e)
         {
 
         }

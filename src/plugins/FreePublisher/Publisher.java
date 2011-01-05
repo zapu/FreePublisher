@@ -54,4 +54,9 @@ public class Publisher
     {
         updateJob.terminate();
     }
+
+    public UpdateTableJob getUpdateTableJob()
+    {
+        return updateJob;
+    }
 }

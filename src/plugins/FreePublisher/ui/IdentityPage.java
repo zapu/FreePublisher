@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.Publisher;
+import plugins.FreePublisher.UpdateTableJob;
 import plugins.FreePublisher.models.IdentityModel;
 import plugins.FreePublisher.models.IdentityModel.IdentityResult;
 import plugins.FreePublisher.models.ModelCallback;
@@ -71,6 +72,8 @@ public class IdentityPage extends Controller
                 {
                     System.err.println(e);
                 }
+
+
             }
             
             return 0;
@@ -245,6 +248,15 @@ public class IdentityPage extends Controller
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
+            UpdateTableJob updateTableJob = getPublisher().getUpdateTableJob();
+            if(updateTableJob.isWorking())
+                return STATUS_ERROR;
+
+            if(getPublisher().identity == null)
+                return STATUS_ERROR;
+
+            updateTableJob.forceRun();
+
             return STATUS_NOERROR;
         }
     }
