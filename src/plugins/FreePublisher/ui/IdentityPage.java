@@ -198,7 +198,7 @@ public class IdentityPage extends Controller
                         return STATUS_DONE;
                     }
                 }
-                else
+                else if(post)
                 {
                     thread = new Thread(this);
                     thread.start();
@@ -206,6 +206,18 @@ public class IdentityPage extends Controller
                     contentNode.addChild("p", "Dispatched");
 
                     return STATUS_DISPATCHED;
+                }
+                else
+                {
+                    HTMLNode form = getPR().addFormChild(contentNode, "", "form name");
+                    form.addChild("input",
+                                    new String[] { "type", "name", "value" },
+                                    new String[] { "hidden", "action", "createIdentity" });
+                    form.addChild("input",
+                                    new String[] { "type", "value", "style" },
+                                    new String[] { "submit", "Create Identity", "margin-top:10px; margin-bottom:20px;" });
+
+                    return STATUS_NOERROR;
                 }
             }
             catch(Exception e)

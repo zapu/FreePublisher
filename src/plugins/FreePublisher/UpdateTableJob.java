@@ -63,7 +63,7 @@ public class UpdateTableJob implements Runnable
 
         try
         {
-            Thread.currentThread().sleep(2000);
+            Thread.sleep(2000);
         }
         catch(Exception e)
         {
