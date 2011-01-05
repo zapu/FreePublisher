@@ -3,10 +3,6 @@ package plugins.FreePublisher;
 import plugins.FreePublisher.ui.UserInterface;
 import freenet.l10n.BaseL10n.LANGUAGE;
 import freenet.pluginmanager.*;
-import plugins.FreePublisher.events.EventTable;
-import plugins.FreePublisher.models.EventTableModel;
-import plugins.FreePublisher.models.FreenetModel;
-import plugins.FreePublisher.models.IdentityModel;
 
 /**
  *
@@ -30,6 +26,7 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         respirator = pr;
 
         publisher = new Publisher(respirator);
+        publisher.init();
 
         userInterface = new UserInterface(this);
         userInterface.load();
@@ -40,6 +37,7 @@ public class FreePublisher implements FredPlugin, FredPluginThreadless, FredPlug
         System.err.println("FreePublisher terminated.");
 
         userInterface.unload();
+        publisher.deinit();
     }
 
     public String getVersion()

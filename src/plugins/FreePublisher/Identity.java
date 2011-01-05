@@ -48,7 +48,7 @@ public class Identity
             Document doc2 = builder.build(new StringReader(decrypted));
             Element keysRoot = doc2.getRootElement();
             loadKeys(keysRoot);*/
-            throw new Exception("key encryption unsupported (yet).");
+            throw new Exception("key encryption not supported (yet).");
         }
     }
 

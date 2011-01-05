@@ -27,6 +27,7 @@ public class IdentityPage extends Controller
         registerAction("", new IndexAction());
         registerAction("loadIdentity", new LoadIdentityAction());
         registerAction("createIdentity", new CreateIdentityAction());
+        registerAction("forceUpdate", new ForcePushAction());
     }
 
     @Override
@@ -237,6 +238,14 @@ public class IdentityPage extends Controller
         public void statusCallback(int status)
         {
             System.err.println("CreateIdentityAction::statusCallback " + status);
+        }
+    }
+
+    class ForcePushAction implements WebPageAction
+    {
+        public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
+        {
+            return STATUS_NOERROR;
         }
     }
 }
