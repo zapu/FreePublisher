@@ -16,6 +16,7 @@ public class UpdateTableJob implements Runnable
     static public final int Interval = 10 * 60 * 1000;
     private boolean terminated = false;
     private boolean working = false;
+    private boolean forced = false;
 
     public synchronized void run()
     {
@@ -23,14 +24,19 @@ public class UpdateTableJob implements Runnable
 
         while(!terminated)
         {
-            try
+            if(!forced)
             {
-                wait(Interval);
+                try
+                {
+                    wait(Interval);
+                }
+                catch(InterruptedException e)
+                {
+
+                }
             }
-            catch(InterruptedException e)
-            {
-                
-            }
+
+            forced = false;
 
             if(terminated)
                 return;
@@ -43,6 +49,7 @@ public class UpdateTableJob implements Runnable
 
     public synchronized void forceRun()
     {
+        forced = true;
         notifyAll();
     }
 
@@ -52,9 +59,14 @@ public class UpdateTableJob implements Runnable
         notifyAll();
     }
 
-    public synchronized boolean isWorking()
+    public boolean isWorking()
     {
         return working;
+    }
+
+    public boolean isForced()
+    {
+        return forced;
     }
 
     private synchronized void work()

@@ -41,20 +41,22 @@ public class IdentityPage extends Controller
     {
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
+            HTMLNode infobox = getPR().getPageMaker().getInfobox("identity", "Identity info", contentNode);
+
             Identity identity = getPublisher().identity;
             if(identity == null)
             {
-                contentNode.addChild("p", "Identity not loaded.");
+                infobox.addChild("p", "Identity not loaded.");
             }
             else
             {
-                contentNode.addChild("p", "Loaded identity: " + identity.getName() + "(" + identity.getPublicKey() + ")");
+                infobox.addChild("p", "Loaded identity: " + identity.getName() + "(" + identity.getPublicKey() + ")");
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 try
                 {
                     identity.save(stream);
-                    contentNode.addChild("h1", "Identity:");
-                    contentNode.addChild("pre", stream.toString());
+                    infobox.addChild("h1", "Identity:");
+                    infobox.addChild("pre", stream.toString());
                 }
                 catch(Exception e)
                 {
@@ -65,8 +67,8 @@ public class IdentityPage extends Controller
                 try
                 {
                     getPublisher().eventTable.outputEventTable(stream);
-                    contentNode.addChild("h1", "Events:");
-                    contentNode.addChild("pre", stream.toString());
+                    infobox.addChild("h1", "Events:");
+                    infobox.addChild("pre", stream.toString());
                 }
                 catch(Exception e)
                 {
@@ -123,7 +125,9 @@ public class IdentityPage extends Controller
                     }
                     else
                     {
-                        HTMLNode form = getPR().addFormChild(contentNode, "", "form name");
+                        HTMLNode infobox = getPR().getPageMaker().getInfobox("identity", "Load identity", contentNode);
+
+                        HTMLNode form = getPR().addFormChild(infobox, "", "form name");
                         form.addChild("input",
                                         new String[] { "class", "type", "name" },
                                         new String[] { "config", "file", "file" });
@@ -132,7 +136,7 @@ public class IdentityPage extends Controller
                                         new String[] { "hidden", "action", "loadIdentity" });
                         form.addChild("input",
                                         new String[] { "type", "value", "style" },
-                                        new String[] { "submit", "Add Feed", "margin-top:10px; margin-bottom:20px;" });
+                                        new String[] { "submit", "Load identity", "margin-top:10px; margin-bottom:20px;" });
 
                         return STATUS_NOERROR;
                     }
@@ -209,7 +213,9 @@ public class IdentityPage extends Controller
                 }
                 else
                 {
-                    HTMLNode form = getPR().addFormChild(contentNode, "", "form name");
+                    HTMLNode infobox = getPR().getPageMaker().getInfobox("identity", "Create identity", contentNode);
+
+                    HTMLNode form = getPR().addFormChild(infobox, "", "form name");
                     form.addChild("input",
                                     new String[] { "type", "name", "value" },
                                     new String[] { "hidden", "action", "createIdentity" });
@@ -261,13 +267,13 @@ public class IdentityPage extends Controller
         public int handleAction(HTTPRequest request, HTMLNode contentNode, boolean post)
         {
             UpdateTableJob updateTableJob = getPublisher().getUpdateTableJob();
-            if(updateTableJob.isWorking())
-                return STATUS_ERROR;
 
             if(getPublisher().identity == null)
                 return STATUS_ERROR;
 
             updateTableJob.forceRun();
+
+            contentNode.addChild("p", "Force push dispatched.");
 
             return STATUS_NOERROR;
         }
