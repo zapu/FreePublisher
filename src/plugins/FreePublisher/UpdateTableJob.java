@@ -89,6 +89,7 @@ public class UpdateTableJob implements Runnable
         if(publisher.eventTable == null || publisher.identity == null)
         {
             System.err.println("UpdateTableJob end work (identity not loaded) " + new Date());
+            return;
         }
 
         if(!publisher.eventTable.isDirty())

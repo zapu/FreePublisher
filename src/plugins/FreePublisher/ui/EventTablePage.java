@@ -124,7 +124,10 @@ public class EventTablePage extends Controller
                 }
             }
 
-            contentNode.addChild("a", new String[] { "href" }, new String[] { path() }, "back");
+            contentNode.addChild("a",
+                    new String[] { "href" },
+                    new String[] { path() },
+                    "back");
 
             return 0;
         }

@@ -272,8 +272,8 @@ public class IdentityPage extends Controller
         {
             UpdateTableJob updateTableJob = getPublisher().getUpdateTableJob();
 
-            //if(getPublisher().identity == null)
-            //    return STATUS_ERROR;
+            if(getPublisher().identity == null)
+                return STATUS_ERROR;
 
             updateTableJob.forceRun();
 
