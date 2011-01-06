@@ -75,7 +75,11 @@ public class IdentityPage extends Controller
                     System.err.println(e);
                 }
 
-
+                HTMLNode pushinfobox = getPR().getPageMaker().getInfobox("push", "Event Table Push", contentNode);
+                pushinfobox.addChild("a",
+                        new String[] { "href" },
+                        new String[] { path() + "?action=forceUpdate" },
+                        "Force event table push");
             }
             
             return 0;
@@ -268,8 +272,8 @@ public class IdentityPage extends Controller
         {
             UpdateTableJob updateTableJob = getPublisher().getUpdateTableJob();
 
-            if(getPublisher().identity == null)
-                return STATUS_ERROR;
+            //if(getPublisher().identity == null)
+            //    return STATUS_ERROR;
 
             updateTableJob.forceRun();
 

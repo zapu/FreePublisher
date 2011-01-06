@@ -80,14 +80,16 @@ public class IdentityModel extends FreenetModel
 
         System.err.println("Identity file parsed.");
 
-        FetchResult fetch = getHLSL().fetch(new FreenetURI("USK@" + identity.getPublicKey() + "/events.xml/0"));
+        /*FetchResult fetch = getHLSL().fetch(new FreenetURI("USK@" + identity.getPublicKey() + "/events.xml/0"));
 
         System.err.println("Fetched event table.");
 
         EventTable table = new EventTable();
         table.loadEventTable(fetch.asBucket().getInputStream());
 
-        System.err.println("Event table parsed.");
+        System.err.println("Event table parsed.");*/
+
+        EventTable table = new EventTable();
 
         IdentityResult result = new IdentityResult();
         result.identity = identity;

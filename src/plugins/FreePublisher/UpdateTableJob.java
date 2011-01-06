@@ -1,5 +1,7 @@
 package plugins.FreePublisher;
 
+import java.util.Date;
+
 /**
  *
  * @author zapu
@@ -18,7 +20,7 @@ public class UpdateTableJob implements Runnable
     private boolean working = false;
     private boolean forced = false;
 
-    public synchronized void run()
+    public void run()
     {
         System.err.println("UpdateTableJob starts...");
 
@@ -26,13 +28,16 @@ public class UpdateTableJob implements Runnable
         {
             if(!forced)
             {
-                try
+                synchronized(this)
                 {
-                    wait(Interval);
-                }
-                catch(InterruptedException e)
-                {
+                    try
+                    {
+                        wait(Interval);
+                    }
+                    catch(InterruptedException e)
+                    {
 
+                    }
                 }
             }
 
@@ -69,13 +74,15 @@ public class UpdateTableJob implements Runnable
         return forced;
     }
 
-    private synchronized void work()
+    private void work()
     {
         publisher.identityLock.lock();
 
+        System.err.println("Work() " + new Date());
+
         try
         {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         }
         catch(Exception e)
         {
