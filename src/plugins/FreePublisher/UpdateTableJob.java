@@ -1,5 +1,11 @@
 package plugins.FreePublisher;
 
+import freenet.client.ClientMetadata;
+import freenet.client.HighLevelSimpleClient;
+import freenet.client.InsertBlock;
+import freenet.keys.FreenetURI;
+import freenet.support.api.Bucket;
+import freenet.support.io.ArrayBucket;
 import java.util.Date;
 
 /**
@@ -76,21 +82,51 @@ public class UpdateTableJob implements Runnable
 
     private void work()
     {
+        System.err.println("UpdateTableJob work() " + new Date());
+
         publisher.identityLock.lock();
 
-        System.err.println("Work() " + new Date());
+        if(publisher.eventTable == null || publisher.identity == null)
+        {
+            System.err.println("UpdateTableJob end work (identity not loaded) " + new Date());
+        }
+
+        if(!publisher.eventTable.isDirty())
+        {
+            System.err.println("UpdateTableJob end work (eventTable not dirty) " + new Date());
+            return;
+        }
+
+        FreenetURI tableURI;
+        ArrayBucket bucket = new ArrayBucket();
 
         try
         {
-            Thread.sleep(10000);
+            tableURI = new FreenetURI("USK@" + publisher.identity.getPrivateKey() + "/events.xml/0");
+
+            publisher.eventTable.outputEventTable(bucket.getOutputStream());
         }
         catch(Exception e)
         {
-
+            System.err.println("Error in UpdateTableJob (preparing): " + e);
+            return;
         }
         finally
         {
             publisher.identityLock.unlock();
         }
+
+        HighLevelSimpleClient HLSL = publisher.getPR().getHLSimpleClient();
+
+        try
+        {
+            HLSL.insert(new InsertBlock(bucket, new ClientMetadata("text/plain"), tableURI), false, null);
+        }
+        catch(Exception e)
+        {
+            System.err.println("Error in UpdateTableJob (inserting): " + e);
+        }
+
+        System.err.println("UpdateTableJob end work " + new Date());
     }
 }
