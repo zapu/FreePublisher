@@ -55,7 +55,7 @@ public class InsertPage extends Controller
                 contentNode.addChild("h1", "Identity is not loaded.");
                 contentNode.addChild("h2", "Load identity first.");
 
-                //return STATUS_NOERROR;
+                return STATUS_NOERROR;
             }
 
             contentNode.addChild("h2", "New insert");

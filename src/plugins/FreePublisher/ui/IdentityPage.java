@@ -47,6 +47,18 @@ public class IdentityPage extends Controller
             if(identity == null)
             {
                 infobox.addChild("p", "Identity not loaded.");
+
+                HTMLNode identityList = infobox.addChild("ul");
+
+                identityList.addChild("li").addChild("a",
+                        new String[] { "href" },
+                        new String[] { path() + "?action=loadIdentity" },
+                        "Load identity");
+
+                identityList.addChild("li").addChild("a",
+                        new String[] { "href" },
+                        new String[] { path() + "?action=createIdentity" },
+                        "Create identity");
             }
             else
             {
