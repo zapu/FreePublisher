@@ -180,8 +180,17 @@ public class IdentityPage extends Controller
             try
             {
                 result = identityModel.loadIdentity(identityStream);
-                getPublisher().identity = result.identity;
-                getPublisher().eventTable = result.eventTable;
+
+                try
+                {
+                    getPublisher().identityLock.lock();
+                    getPublisher().identity = result.identity;
+                    getPublisher().eventTable = result.eventTable;
+                }
+                finally
+                {
+                    getPublisher().identityLock.unlock();
+                }
             }
             catch(Exception ex)
             {
@@ -274,8 +283,16 @@ public class IdentityPage extends Controller
                 result = identityModel.createIdentity();
                 if(loadIdentity)
                 {
-                    getPublisher().identity = result.identity;
-                    getPublisher().eventTable = result.eventTable;
+                    try
+                    {
+                        getPublisher().identityLock.lock();
+                        getPublisher().identity = result.identity;
+                        getPublisher().eventTable = result.eventTable;
+                    }
+                    finally
+                    {
+                        getPublisher().identityLock.unlock();
+                    }
                 }
             }
             catch(Exception ex)
