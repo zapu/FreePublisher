@@ -150,8 +150,16 @@ public class InsertPage extends Controller
                 if(cancel)
                     return;
 
-                getPublisher().eventTable.getEvents().add(newEvent);
-                getPublisher().eventTable.setDirty(true);
+                try
+                {
+                    getPublisher().identityLock.lock();
+                    getPublisher().eventTable.getEvents().add(newEvent);
+                    getPublisher().eventTable.setDirty(true);
+                }
+                finally
+                {
+                    getPublisher().identityLock.unlock();
+                }
             }
             catch (InsertException ex)
             {
