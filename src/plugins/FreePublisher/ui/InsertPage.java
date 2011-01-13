@@ -172,7 +172,7 @@ public class InsertPage extends Controller
 
             if(getPublisher().identity == null)
             {
-                //return STATUS_ERROR;
+                return STATUS_ERROR;
             }
 
             Bucket bucket = null;

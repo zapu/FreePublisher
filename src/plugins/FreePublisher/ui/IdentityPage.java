@@ -88,6 +88,7 @@ public class IdentityPage extends Controller
                 }
 
                 HTMLNode pushinfobox = getPR().getPageMaker().getInfobox("push", "Event Table Push", contentNode);
+                pushinfobox.addChild("p", "Status: " + (getPublisher().getUpdateTableJob().isWorking() ? "working" : "idle"));
                 pushinfobox.addChild("a",
                         new String[] { "href" },
                         new String[] { path() + "?action=forceUpdate" },
@@ -114,6 +115,10 @@ public class IdentityPage extends Controller
                     if(result == null)
                     {
                         contentNode.addChild("p", "Still running...");
+                        contentNode.addChild("li").addChild("a",
+                            new String[] { "href" },
+                            new String[] { path() + "?action=loadIdentity" },
+                            "Refresh");
                         return taskStatus;
                     }
                     else
@@ -136,6 +141,10 @@ public class IdentityPage extends Controller
                         thread.start();
 
                         contentNode.addChild("p", "Dispatched");
+                        contentNode.addChild("li").addChild("a",
+                            new String[] { "href" },
+                            new String[] { path() + "?action=loadIdentity" },
+                            "Refresh");
 
                         return STATUS_DISPATCHED;
                     }
@@ -210,6 +219,10 @@ public class IdentityPage extends Controller
                     if(result == null)
                     {
                         contentNode.addChild("p", "Still running...");
+                        contentNode.addChild("li").addChild("a",
+                            new String[] { "href" },
+                            new String[] { path() + "?action=createIdentity" },
+                            "Refresh");
                         return taskStatus;
                     }
                     else
@@ -224,6 +237,10 @@ public class IdentityPage extends Controller
                     thread.start();
 
                     contentNode.addChild("p", "Dispatched");
+                    contentNode.addChild("li").addChild("a",
+                            new String[] { "href" },
+                            new String[] { path() + "?action=createIdentity" },
+                            "Refresh");
 
                     return STATUS_DISPATCHED;
                 }

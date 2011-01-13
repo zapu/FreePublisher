@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import plugins.FreePublisher.Publisher;
+import plugins.FreePublisher.events.Event;
 import plugins.FreePublisher.events.EventTable;
 import plugins.FreePublisher.models.EventTableModel;
 
@@ -100,10 +101,20 @@ public class EventTablePage extends Controller
                 if(thread != null)
                 {
                     contentNode.addChild("pre", "working...");
+                    contentNode.addChild("br");
+                    contentNode.addChild("a",
+                            new String[] { "href" },
+                            new String[] { path() + "?action=show_" + getAutoId() },
+                            "refresh");
                 }
                 else if(table != null)
                 {
                     contentNode.addChild("pre", "done...");
+                    for(Event ev : table.getEvents())
+                    {
+
+                    }
+
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     try
                     {
