@@ -82,24 +82,26 @@ public class UpdateTableJob implements Runnable
 
     private void work()
     {
-        System.err.println("UpdateTableJob work() " + new Date());
+        System.err.println("UpdateTableJob: work() " + new Date());
 
         publisher.identityLock.lock();
 
         if(publisher.eventTable == null || publisher.identity == null)
         {
-            System.err.println("UpdateTableJob end work (identity not loaded) " + new Date());
+            System.err.println("UpdateTableJob: end work (identity not loaded) " + new Date());
             return;
         }
 
         if(!publisher.eventTable.isDirty())
         {
-            System.err.println("UpdateTableJob end work (eventTable not dirty) " + new Date());
+            System.err.println("UpdateTableJob: end work (eventTable not dirty) " + new Date());
             return;
         }
 
         FreenetURI tableURI;
         ArrayBucket bucket = new ArrayBucket();
+
+        System.err.println("UpdateTableJob: Pushing event table...");
 
         try
         {
@@ -109,7 +111,7 @@ public class UpdateTableJob implements Runnable
         }
         catch(Exception e)
         {
-            System.err.println("Error in UpdateTableJob (preparing): " + e);
+            System.err.println("UpdateTableJob: Error (preparing): " + e);
             return;
         }
         finally
@@ -125,9 +127,9 @@ public class UpdateTableJob implements Runnable
         }
         catch(Exception e)
         {
-            System.err.println("Error in UpdateTableJob (inserting): " + e);
+            System.err.println("UpdateTableJob: Error (inserting): " + e);
         }
 
-        System.err.println("UpdateTableJob end work " + new Date());
+        System.err.println("UpdateTableJob: end work " + new Date());
     }
 }
