@@ -10,6 +10,7 @@ import java.io.InputStream;
 import plugins.FreePublisher.Identity;
 import plugins.FreePublisher.Publisher;
 import plugins.FreePublisher.UpdateTableJob;
+import plugins.FreePublisher.events.Event;
 import plugins.FreePublisher.models.IdentityModel;
 import plugins.FreePublisher.models.IdentityModel.IdentityResult;
 import plugins.FreePublisher.models.ModelCallback;
@@ -85,6 +86,17 @@ public class IdentityPage extends Controller
                 catch(Exception e)
                 {
                     System.err.println(e);
+                }
+
+                if(!getPublisher().eventTable.getEvents().isEmpty())
+                {
+                    HTMLNode eventBox = getPR().getPageMaker().getInfobox("events", "Events", contentNode);
+                    HTMLNode eventListNode = eventBox.addChild("ul");
+                    for(Event event : getPublisher().eventTable.getEvents())
+                    {
+                        eventListNode.addChild("li").addChild(event.getHTMLNode());
+                    }
+
                 }
 
                 HTMLNode pushinfobox = getPR().getPageMaker().getInfobox("push", "Event Table Push", contentNode);

@@ -8,6 +8,9 @@ import freenet.support.api.Bucket;
 import freenet.support.api.HTTPRequest;
 import freenet.support.api.HTTPUploadedFile;
 import freenet.support.io.ArrayBucket;
+import freenet.support.io.Closer;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,10 +100,7 @@ public class InsertPage extends Controller
                 HTMLNode list = contentNode.addChild("ul");
                 for(InsertJob job : insertJobs)
                 {
-                    list.addChild("li").addChild("a",
-                            new String [] { "href" } ,
-                            new String [] { "" },
-                            job.toString());
+                    list.addChild("li").addChild("span", job.toString());
                 }
             }
 
@@ -111,6 +111,7 @@ public class InsertPage extends Controller
     class InsertJob implements Runnable
     {
         private boolean cancel;
+        private boolean done;
         private Bucket bucket;
         private ClientMetadata meta;
         private FreenetURI uri;
@@ -133,6 +134,11 @@ public class InsertPage extends Controller
         public void setCancel()
         {
             cancel = true;
+        }
+
+        public boolean isDone()
+        {
+            return done;
         }
 
         public void run()
@@ -160,12 +166,20 @@ public class InsertPage extends Controller
                 {
                     getPublisher().identityLock.unlock();
                 }
+
+                done = true;
             }
-            catch (InsertException ex)
+            catch (Exception ex)
             {
                 System.err.println(ex.toString());
                 lastError = ex.getMessage();
             }
+        }
+
+        @Override
+        public String toString()
+        {
+            return title + "(" + (done ? "done" : "working") + ")";
         }
     }
 
@@ -180,10 +194,12 @@ public class InsertPage extends Controller
 
             if(getPublisher().identity == null)
             {
+                contentNode.addChild("p", "Identity not loaded.");
                 return STATUS_ERROR;
             }
 
             Bucket bucket = null;
+            ClientMetadata metadata = new ClientMetadata("text/plain");
             String uploadFilename = request.getPartAsStringFailsafe("uploadFilename", 128);
             if(uploadFilename.isEmpty())
             {
@@ -193,14 +209,44 @@ public class InsertPage extends Controller
                     System.err.println("blahblah");
                 }
                 else
-                    bucket = uploadedFile.getData();
-            }
+                {
+                    System.err.println("Uploading from browser");
+                    ArrayBucket ab = new ArrayBucket("insertdata");
+                    try
+                    {
+                        OutputStream stream = ab.getOutputStream();
+                        int copied = 0;
+                        byte[] buffer = new byte[128];
+                        while(copied < uploadedFile.getData().size())
+                        {
+                            int ret = uploadedFile.getData().getInputStream().read(buffer);
+                            stream.write(buffer, 0, ret);
+                            copied += ret;
+                        }
+                        stream.flush();
+                        Closer.close(stream);
+                    }
+                    catch (IOException ex)
+                    {
+                        System.err.println("Bucket copying exception: " + ex);
+                    }
 
+                    metadata = new ClientMetadata(uploadedFile.getContentType());
+                }
+            }
+            
             String title = request.getPartAsStringFailsafe("title", 64);
 
-            InsertJob action = new InsertJob(title, bucket, new ClientMetadata("text/plain"), null);
+            InsertJob action = new InsertJob(title, bucket, metadata, null);
             insertJobs.add(action);
             new Thread(action).start();
+
+            contentNode.addChild("p", "Insert dispatched.");
+            contentNode.addChild("br");
+            contentNode.addChild("a",
+                new String[] { "href" },
+                new String[] { path() },
+                "back");
 
             return STATUS_NOERROR;
         }

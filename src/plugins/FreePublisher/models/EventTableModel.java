@@ -33,7 +33,7 @@ public class EventTableModel extends FreenetModel
         eventStream.flush();
         Closer.close(eventStream);
 
-        System.err.println("EventTable serialized");
+        System.err.println("EventTable serialized. Inserting " + arrayBucket.size() + " bytes");
 
         getHLSL().insert(new InsertBlock(arrayBucket, new ClientMetadata("text/plain"), new FreenetURI("USK@" + identity.getPrivateKey() + "/events.xml/0")), false, null);
 

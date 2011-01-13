@@ -1,5 +1,6 @@
 package plugins.FreePublisher.events;
 
+import freenet.support.HTMLNode;
 import org.jdom.Element;
 
 /**
@@ -37,4 +38,13 @@ public class EventAdd extends Event
         element.getChildren().add(new Element("getURI").setText(getURI));
     }
 
+    @Override
+    public HTMLNode getHTMLNode()
+    {
+        return new HTMLNode("a",
+                new String[] { "href" },
+                new String[] { "http://127.0.0.1:8888/" + getURI },
+                title
+        );
+    }
 }

@@ -62,7 +62,11 @@ public class IdentityModel extends FreenetModel
         eventStream.flush();
         Closer.close(eventStream);
 
+        System.err.println("Inserting " + arrayBucket.size() + " bytes");
+
         getHLSL().insert(new InsertBlock(arrayBucket, new ClientMetadata("text/plain"), new FreenetURI("USK@" + privateKey + "/events.xml/0")), false, null);
+
+        arrayBucket.free();
 
         System.err.println("Inserted EventTable. Success!");
 
@@ -80,17 +84,15 @@ public class IdentityModel extends FreenetModel
 
         System.err.println("Identity file parsed.");
 
-        /*FetchResult fetch = getHLSL().fetch(new FreenetURI("USK@" + identity.getPublicKey() + "/events.xml/0"));
+        FetchResult fetch = getHLSL().fetch(new FreenetURI("USK@" + identity.getPublicKey() + "/events.xml/0"));
 
         System.err.println("Fetched event table.");
 
         EventTable table = new EventTable();
         table.loadEventTable(fetch.asBucket().getInputStream());
 
-        System.err.println("Event table parsed.");*/
-
-        EventTable table = new EventTable();
-
+        System.err.println("Event table parsed.");
+        
         IdentityResult result = new IdentityResult();
         result.identity = identity;
         result.eventTable = table;

@@ -7,6 +7,7 @@ import freenet.client.InsertException;
 import freenet.keys.FreenetURI;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.api.Bucket;
+import java.net.MalformedURLException;
 
 /**
  *
@@ -19,14 +20,19 @@ public class DataModel extends FreenetModel
         super(respirator);
     }
 
-    public FreenetURI insertBucket(Bucket bucket, ClientMetadata meta, FreenetURI uri) throws InsertException
+    public FreenetURI insertBucket(Bucket bucket, ClientMetadata meta, FreenetURI uri) throws InsertException, MalformedURLException
     {
+        System.err.println("InsertBucket started: " + bucket.size() + " bytes of " + meta);
+
         if(uri == null)
         {
-            uri = getHLSL().generateKeyPair("")[0];
+            uri = new FreenetURI(getHLSL().generateKeyPair("")[0] + "file.bin");
         }
 
+        uri = getHLSL().insert(new InsertBlock(bucket, meta, uri), false, null);
+
+        System.err.println("InsertBucket done");
+
         return uri;
-        //return getHLSL().insert(new InsertBlock(bucket, meta, uri), false, null);
     }
 }

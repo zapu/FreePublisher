@@ -1,5 +1,6 @@
 package plugins.FreePublisher.events;
 
+import freenet.support.HTMLNode;
 import java.util.Date;
 import org.jdom.*;
 
@@ -39,4 +40,6 @@ public abstract class Event
         event.unserialize(element);
         return event;
     }
+
+    public abstract HTMLNode getHTMLNode();
 }

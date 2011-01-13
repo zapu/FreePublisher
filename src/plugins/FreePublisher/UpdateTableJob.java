@@ -6,6 +6,8 @@ import freenet.client.InsertBlock;
 import freenet.keys.FreenetURI;
 import freenet.support.api.Bucket;
 import freenet.support.io.ArrayBucket;
+import freenet.support.io.Closer;
+import java.io.OutputStream;
 import java.util.Date;
 
 /**
@@ -97,7 +99,7 @@ public class UpdateTableJob implements Runnable
         }
 
         FreenetURI tableURI;
-        ArrayBucket bucket = new ArrayBucket();
+        ArrayBucket bucket = new ArrayBucket("EventTableBucket_Update");
 
         System.err.println("UpdateTableJob: Pushing event table...");
 
@@ -105,7 +107,10 @@ public class UpdateTableJob implements Runnable
         {
             tableURI = new FreenetURI("USK@" + publisher.identity.getPrivateKey() + "/events.xml/0");
 
-            publisher.eventTable.outputEventTable(bucket.getOutputStream());
+            OutputStream stream = bucket.getOutputStream();
+            publisher.eventTable.outputEventTable(stream);
+            stream.flush();
+            Closer.close(stream);
         }
         catch(Exception e)
         {
@@ -121,6 +126,7 @@ public class UpdateTableJob implements Runnable
 
         try
         {
+            System.err.println("UpdateTableJob: inserting " + bucket.size() + " bytes");
             HLSL.insert(new InsertBlock(bucket, new ClientMetadata("text/plain"), tableURI), false, null);
         }
         catch(Exception e)
