@@ -28,8 +28,6 @@ public class UpdateTableJob implements Runnable
 
     public void run()
     {
-        System.err.println("UpdateTableJob starts...");
-
         while(!terminated)
         {
             if(!forced)
@@ -82,19 +80,19 @@ public class UpdateTableJob implements Runnable
 
     private void work()
     {
-        System.err.println("UpdateTableJob: work() " + new Date());
-
         publisher.identityLock.lock();
 
         if(publisher.eventTable == null || publisher.identity == null)
         {
-            System.err.println("UpdateTableJob: end work (identity not loaded) " + new Date());
+            System.err.println("UpdateTableJob: nothing to do (identity not loaded) " + new Date());
+            publisher.identityLock.unlock();
             return;
         }
 
         if(!publisher.eventTable.isDirty())
         {
-            System.err.println("UpdateTableJob: end work (eventTable not dirty) " + new Date());
+            System.err.println("UpdateTableJob: nothing to do (eventTable not dirty) " + new Date());
+            publisher.identityLock.unlock();
             return;
         }
 
@@ -130,6 +128,6 @@ public class UpdateTableJob implements Runnable
             System.err.println("UpdateTableJob: Error (inserting): " + e);
         }
 
-        System.err.println("UpdateTableJob: end work " + new Date());
+        System.err.println("UpdateTableJob: done " + new Date());
     }
 }
