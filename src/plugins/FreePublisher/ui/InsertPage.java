@@ -10,6 +10,7 @@ import freenet.support.api.HTTPUploadedFile;
 import freenet.support.io.ArrayBucket;
 import freenet.support.io.Closer;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
@@ -214,22 +215,22 @@ public class InsertPage extends Controller
                     ArrayBucket ab = new ArrayBucket("insertdata");
                     try
                     {
-                        OutputStream stream = ab.getOutputStream();
-                        int copied = 0;
-                        byte[] buffer = new byte[128];
-                        while(copied < uploadedFile.getData().size())
-                        {
-                            int ret = uploadedFile.getData().getInputStream().read(buffer);
-                            stream.write(buffer, 0, ret);
-                            copied += ret;
-                        }
-                        stream.flush();
-                        Closer.close(stream);
+                        OutputStream outputStream = ab.getOutputStream();
+
+                        InputStream inputStream = uploadedFile.getData().getInputStream();
+                        for(int i = 0; i < uploadedFile.getData().size(); i++)
+                            outputStream.write(inputStream.read());
+                        
+                        outputStream.flush();
+                        Closer.close(outputStream);
                     }
                     catch (IOException ex)
                     {
                         System.err.println("Bucket copying exception: " + ex);
+                        return STATUS_ERROR;
                     }
+
+                    bucket = ab;
 
                     metadata = new ClientMetadata(uploadedFile.getContentType());
                 }

@@ -1,6 +1,7 @@
 package plugins.FreePublisher.models;
 
 import freenet.client.ClientMetadata;
+import freenet.client.FetchException;
 import freenet.client.FetchResult;
 import freenet.client.InsertBlock;
 import freenet.keys.FreenetURI;
@@ -44,7 +45,20 @@ public class EventTableModel extends FreenetModel
     {
         System.err.println("FetchEventTable started");
 
-        FetchResult fetch = getHLSL().fetch(new FreenetURI("USK@" + key + "/events.xml/0"));
+        FetchResult fetch;
+        try
+        {
+            fetch = getHLSL().fetch(new FreenetURI("USK@" + key + "/events.xml/0"));
+        }
+        catch(FetchException e)
+        {
+            if(e.newURI != null)
+            {
+                fetch = getHLSL().fetch(e.newURI);
+            }
+            else
+                throw e;
+        }
 
         System.err.println("Fetched event table.");
 
